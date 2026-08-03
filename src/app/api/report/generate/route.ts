@@ -4,6 +4,12 @@ import { updateDb } from "@/lib/db";
 import { getUserIdFromSession } from "@/lib/auth";
 import { generateReport } from "@/lib/anthropic";
 
+// Claude report generation typically takes 50-65s (live web search +
+// generation). Vercel's default function timeout (10-15s depending on plan)
+// is well under that, so without this the request gets killed before Claude
+// finishes, regardless of how fast the model call itself is.
+export const maxDuration = 90;
+
 const answersSchema = z.object({
   companyName: z.string().trim().min(1).max(200),
   website: z.string().trim().min(1).max(300),
