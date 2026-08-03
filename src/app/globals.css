@@ -1,26 +1,186 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4ecd8;
+  --foreground: #1a2436;
+
+  /* Navy — ink, used for text and ruled borders on the light theme;
+     also doubles as a deliberate dark "instrument screen" surface
+     (see .instrument-panel / TelescopeSchematic). */
+  --color-navy-950: #080b12;
+  --color-navy-900: #0e131e;
+  --color-navy-800: #151c2a;
+  --color-navy-700: #1e2738;
+  --color-navy-600: #2b3649;
+  --color-navy-500: #3d4c66;
+  --color-navy-400: #5c6d8c;
+  --color-navy-300: #8493ac;
+  --color-navy-200: #b7c0d1;
+  --color-navy-100: #dde2ea;
+
+  /* Brass / brown — accent, rustic-metal */
+  --color-brass-200: #f2ddab;
+  --color-brass-300: #e2c17e;
+  --color-brass-400: #cc9f52;
+  --color-brass-500: #ab7f3c;
+  --color-brass-600: #7d5b2a;
+  --color-brass-700: #5a4220;
+
+  /* Cream / paper — page and card surfaces */
+  --color-cream-50: #fbf6e9;
+  --color-cream-100: #f4ecd8;
+  --color-cream-200: #e8dcbc;
+  --color-cream-300: #d8c69a;
+  --color-cream-400: #b8a172;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-karla);
+  --font-display: var(--font-besley);
+  --font-mono: var(--font-plex-mono);
+
+  --color-navy-950: var(--color-navy-950);
+  --color-navy-900: var(--color-navy-900);
+  --color-navy-800: var(--color-navy-800);
+  --color-navy-700: var(--color-navy-700);
+  --color-navy-600: var(--color-navy-600);
+  --color-navy-500: var(--color-navy-500);
+  --color-navy-400: var(--color-navy-400);
+  --color-navy-300: var(--color-navy-300);
+  --color-navy-200: var(--color-navy-200);
+  --color-navy-100: var(--color-navy-100);
+
+  --color-brass-200: var(--color-brass-200);
+  --color-brass-300: var(--color-brass-300);
+  --color-brass-400: var(--color-brass-400);
+  --color-brass-500: var(--color-brass-500);
+  --color-brass-600: var(--color-brass-600);
+  --color-brass-700: var(--color-brass-700);
+
+  --color-cream-50: var(--color-cream-50);
+  --color-cream-100: var(--color-cream-100);
+  --color-cream-200: var(--color-cream-200);
+  --color-cream-300: var(--color-cream-300);
+  --color-cream-400: var(--color-cream-400);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-karla), ui-sans-serif, system-ui, sans-serif;
 }
+
+::selection {
+  background: var(--color-brass-400);
+  color: #1a1204;
+}
+
+/* Base atmosphere: warm paper field with a faint brass haze — no dark mode */
+.paper-field {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background:
+    radial-gradient(ellipse 70% 50% at 12% -10%, rgba(171, 127, 60, 0.13), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 100% 10%, rgba(61, 76, 102, 0.06), transparent 65%),
+    var(--color-cream-100);
+}
+
+/* Film grain — sits over everything at very low opacity for a printed, non-digital feel */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Blueprint grid — for dark instrument-panel sections (e.g. TelescopeSchematic) */
+.blueprint-grid {
+  background-image:
+    linear-gradient(rgba(204, 159, 82, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(204, 159, 82, 0.09) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Brass underline treatment — replaces gradient-text clichés */
+.brass-underline {
+  position: relative;
+  color: var(--color-brass-600);
+}
+
+.card-glow {
+  box-shadow:
+    0 0 0 1px rgba(90, 66, 32, 0.08),
+    0 18px 36px -22px rgba(26, 36, 54, 0.35);
+}
+
+/* Paper card surface — a shade lighter than the page, ink-ruled border */
+.paper-panel {
+  background: linear-gradient(180deg, var(--color-cream-50), #fdfbf3);
+  border: 1px solid var(--color-navy-600);
+}
+
+/* Deliberate dark "instrument screen" surface — used sparingly (e.g. the
+   telescope schematic) as a contained accent, not a page-wide dark mode. */
+.instrument-panel {
+  background: linear-gradient(180deg, var(--color-navy-800), var(--color-navy-900));
+  border: 1px solid var(--color-navy-600);
+}
+
+/* Ornamental rule: a hairline with a small brass diamond mark at the start */
+.rule-brass {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.rule-brass::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--color-brass-500);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.blur-lock {
+  filter: blur(7px);
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes scope-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+.scope-pulse {
+  animation: scope-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes needle-sweep {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+.needle-sweep {
+  animation: needle-sweep 3.2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+input, textarea, select {
+  color-scheme: light;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
