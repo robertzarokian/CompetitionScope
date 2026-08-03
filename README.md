@@ -40,6 +40,7 @@ of the demo experience to the real thing — nothing else needs to change.
 
 | Variable | Effect when set |
 |---|---|
+| `DATABASE_URL` | **Required.** A Postgres connection string (Neon, Supabase, Vercel Postgres, etc.). Without it, `src/lib/db.ts` throws on first use — there is no file-based fallback anymore. See "Storage" below. |
 | `ANTHROPIC_API_KEY` | Report generation calls Claude (`claude-opus-5`) with the `web_search` tool to research real competitors instead of generating a sample report. |
 | `STRIPE_SECRET_KEY` | Checkout creates a real Stripe Checkout Session instead of showing the demo payment form. Takes priority over `STRIPE_PAYMENT_LINK` if both are set — this is the fully-verified path (payment is confirmed server-side via the Stripe API). |
 | `STRIPE_PAYMENT_LINK` | A middle tier for when you have a Stripe [Payment Link](https://stripe.com/payments/payment-links) but no secret key. Checkout redirects to this URL (with `client_reference_id`/`prefilled_email` appended) instead of showing the demo form. Because a Payment Link is a single static URL with no per-request `success_url`, the reportId is stashed in a short-lived `httpOnly` cookie before redirecting and read back by `/api/checkout/return`, which the Payment Link's Dashboard-configured "after payment" redirect must point to. **Unlike `STRIPE_SECRET_KEY`, this does not cryptographically verify payment** — it trusts that the redirect happened, the same trust level as demo mode. Use `STRIPE_SECRET_KEY` instead if you need real verification. |
@@ -55,9 +56,17 @@ To use `STRIPE_PAYMENT_LINK`, open the Payment Link in the Stripe Dashboard → 
 - **Auth** is a minimal email/password system (bcrypt + JWT cookie), not a full identity
   provider. Sign-up is optional at the start of the flow (skippable via the X) and
   required only at checkout, per the product spec.
-- **Storage** is a single JSON file under `.data/` (gitignored), read/write-locked with a
-  simple promise queue. This is intentionally lightweight for a prototype — swap in a
-  real database (Postgres, etc.) before handling real traffic or real payment data.
+- **Storage** is Postgres (`src/lib/db.ts`), accessed via two functions — `readDb()` and
+  `updateDb(mutator)` — that every route was originally written against when storage was
+  a flat JSON file. Rather than rewrite every call site when swapping to a real database,
+  those two functions kept their exact shape: `updateDb` loads all three tables into a
+  plain JS object, runs the mutator against it, then upserts users/reports and
+  append-inserts any new purchases, all inside one transaction. A
+  `pg_advisory_xact_lock` serializes concurrent `updateDb` calls at the database level —
+  necessary on serverless, where multiple instances run at once and an in-process lock
+  (the original JSON-file version's approach) can't coordinate across them. This is a
+  "load the whole table" strategy, fine at prototype scale; if `reports` grows into the
+  thousands, swap the full-table reads for targeted per-id queries.
 - **Report generation** (`src/lib/anthropic.ts`) prompts Claude to research real,
   verifiable competitors and return strict JSON matching the report schema, validated
   with Zod. If the API key is missing, the call fails, or the response doesn't validate,
