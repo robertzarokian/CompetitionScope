@@ -73,8 +73,8 @@ To use `STRIPE_PAYMENT_LINK`, open the Payment Link in the Stripe Dashboard → 
   it falls back to `src/lib/mockReport.ts`, which generates a clearly-labeled synthetic
   sample report so the product flow is always demoable.
   - Tuned for latency: `output_config: { effort: "low" }`, `web_search` capped at
-    `max_uses: 2`, and the prompt caps every field to a fixed sentence/item count
-    (was uncapped high-effort with up to 10 searches, ~5 min/report; now ~50-65s).
+    `max_uses: 3`, and the prompt caps every field to a fixed sentence/item count
+    (was uncapped high-effort with up to 10 searches, ~5 min/report; now ~65-85s).
   - Claude's web-search citations can come back as `<cite index="...">` tags with
     inconsistently-escaped quotes, which corrupts the surrounding JSON string and
     breaks parsing. `extractJson` strips `<cite>`/`</cite>` tags before parsing

@@ -54,7 +54,7 @@ const reportSchema = z.object({
 const SYSTEM_PROMPT = `You are the deep-research engine behind CompetitionScope, a paid competitor-intelligence service. A business owner has given you details about their company. Your job is to use web search extensively to find their real, closest, most successful competitors, analyze what those competitors are doing that works, and produce a prioritized action plan.
 
 Research standards:
-- Work efficiently. 2 well-chosen, distinct search queries is normally enough to identify 3-5 real, closest competitors — don't run more searches than you need to reach a confident answer.
+- Work efficiently, but be thorough: 3-4 well-chosen, distinct search queries to verify competitors and pull real specifics (pricing, positioning, scale) is normally enough — don't run more searches than you need to reach a confident answer.
 - Look into each competitor's positioning, pricing/packaging, marketing channels, apparent scale, and what they emphasize publicly (site copy, reviews, press, job postings, ad presence) to infer their sales and growth strategy.
 - Do not fabricate specific non-public financial figures. When exact revenue is not publicly known, give a labeled estimate range (e.g. "$10M-$25M ARR (estimated)") based on reasonable signals like headcount, funding, or market position, and make clear it is an estimate.
 - Prefer real, verifiable companies found via search over speculation. If you cannot find enough real competitors, use the closest real analogues you can find rather than inventing companies.
@@ -213,7 +213,7 @@ export async function generateReport(
           {
             type: "web_search_20260209",
             name: "web_search",
-            max_uses: 2,
+            max_uses: 3,
           },
         ],
         messages,

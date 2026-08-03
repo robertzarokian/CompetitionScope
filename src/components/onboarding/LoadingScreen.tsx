@@ -101,8 +101,10 @@ export function LoadingScreen() {
         Calculating your CompetitionScope
       </h1>
       <p className="mt-3 max-w-sm text-sm text-navy-500">
-        This usually takes under a minute. We&rsquo;re doing real work — not a
-        spinner for show.
+        We&rsquo;re doing real work — not a spinner for show.
+      </p>
+      <p className="mt-2 max-w-sm text-xs font-semibold uppercase tracking-wide text-brass-600">
+        MAY TAKE UP TO 2 MINUTES — PLEASE DO NOT CLOSE THIS TAB.
       </p>
 
       <div className="mt-8 min-h-[2.5rem] border border-navy-300 bg-cream-50 px-5 py-2.5">
