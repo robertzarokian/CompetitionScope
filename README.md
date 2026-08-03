@@ -72,6 +72,14 @@ To use `STRIPE_PAYMENT_LINK`, open the Payment Link in the Stripe Dashboard → 
   with Zod. If the API key is missing, the call fails, or the response doesn't validate,
   it falls back to `src/lib/mockReport.ts`, which generates a clearly-labeled synthetic
   sample report so the product flow is always demoable.
+  - Tuned for latency: `output_config: { effort: "low" }`, `web_search` capped at
+    `max_uses: 2`, and the prompt caps every field to a fixed sentence/item count
+    (was uncapped high-effort with up to 10 searches, ~5 min/report; now ~50-65s).
+  - Claude's web-search citations can come back as `<cite index="...">` tags with
+    inconsistently-escaped quotes, which corrupts the surrounding JSON string and
+    breaks parsing. `extractJson` strips `<cite>`/`</cite>` tags before parsing
+    (in addition to the prompt asking Claude not to emit them) — don't remove this
+    without re-testing against real (not mocked) API responses.
 - **Payments**: `src/app/api/checkout/create` returns `{mode: "stripe"}` or
   `{mode: "demo"}` depending on whether `STRIPE_SECRET_KEY` is set, and the client
   branches accordingly. Report unlocking on the Stripe path is confirmed two ways: the

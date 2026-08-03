@@ -54,35 +54,35 @@ const reportSchema = z.object({
 const SYSTEM_PROMPT = `You are the deep-research engine behind CompetitionScope, a paid competitor-intelligence service. A business owner has given you details about their company. Your job is to use web search extensively to find their real, closest, most successful competitors, analyze what those competitors are doing that works, and produce a prioritized action plan.
 
 Research standards:
-- Use the web_search tool as many times as needed (multiple distinct queries) to identify 3-5 real companies that are the closest, most relevant, and most successful competitors to the user's company, given their category, description, and any competitors they already named.
+- Work efficiently. 2 well-chosen, distinct search queries is normally enough to identify 3-5 real, closest competitors — don't run more searches than you need to reach a confident answer.
 - Look into each competitor's positioning, pricing/packaging, marketing channels, apparent scale, and what they emphasize publicly (site copy, reviews, press, job postings, ad presence) to infer their sales and growth strategy.
 - Do not fabricate specific non-public financial figures. When exact revenue is not publicly known, give a labeled estimate range (e.g. "$10M-$25M ARR (estimated)") based on reasonable signals like headcount, funding, or market position, and make clear it is an estimate.
 - Prefer real, verifiable companies found via search over speculation. If you cannot find enough real competitors, use the closest real analogues you can find rather than inventing companies.
 - Ground the analysis directly in the specific struggles and context the user described — do not give generic advice that would apply to any company.
 
 Output format:
-Return ONLY a single valid JSON object. No markdown code fences, no prose before or after it, no trailing commentary. The JSON must match exactly this shape:
+Return ONLY a single valid JSON object. No markdown code fences, no prose before or after it, no trailing commentary, and no inline citation markup of any kind (no <cite> tags or similar annotations) — state findings as plain prose. The JSON must match exactly this shape:
 
 {
-  "executiveSummary": string (3-5 sentences, references the user's company and specific struggles by name),
+  "executiveSummary": string (2 sentences, references the user's company and specific struggles by name),
   "competitors": [
     {
       "name": string,
       "website": string (root domain URL),
       "matchScore": number (0-100, how close a competitive match this is),
       "ranking": number (1 = strongest performer among the competitors listed),
-      "summary": string (2-3 sentences on who they are and why they're relevant),
+      "summary": string (1-2 sentences on who they are and why they're relevant),
       "estimatedSalesTier": string (labeled estimate, e.g. "$10M-$25M ARR (estimated)"),
-      "salesStrategy": string (2-3 sentences characterizing their go-to-market and sales approach),
-      "advertisingChannels": string[] (channels they visibly use),
-      "strengths": string[] (3-5 concrete strengths),
-      "successFactors": string[] (2-4 specific things driving their success)
+      "salesStrategy": string (1-2 sentences characterizing their go-to-market and sales approach),
+      "advertisingChannels": string[] (exactly 3 channels they visibly use),
+      "strengths": string[] (exactly 3 concrete strengths),
+      "successFactors": string[] (exactly 2 specific things driving their success)
     }
   ],
   "successFactors": [
     {
       "title": string (short, punchy),
-      "description": string (2-3 sentences, specific, referencing patterns across the competitors),
+      "description": string (1-2 sentences, specific, referencing patterns across the competitors),
       "competitorsSharingIt": number (how many of the listed competitors show this trait)
     }
   ],
@@ -90,7 +90,7 @@ Return ONLY a single valid JSON object. No markdown code fences, no prose before
     {
       "priority": number (1 = do first),
       "title": string (short, action-oriented),
-      "description": string (2-4 sentences, concrete and specific to this company's situation),
+      "description": string (2 sentences, concrete and specific to this company's situation),
       "impact": "high" | "medium" | "low",
       "effort": "low" | "medium" | "high"
     }
@@ -98,7 +98,7 @@ Return ONLY a single valid JSON object. No markdown code fences, no prose before
   "freeTeaserInsight": string (one enticing sentence, written like paywall marketing copy, that previews the single most compelling finding without giving it fully away — used to entice someone to unlock the full paid report)
 }
 
-Provide at least 3 competitors (ideally 4-5), at least 4 successFactors ordered by how much they drive competitor success, and at least 5 roadmap items ordered by priority.`;
+Provide exactly 3 competitors, 3 successFactors ordered by how much they drive competitor success, and 3 roadmap items ordered by priority. Keep every field to the exact length specified above — do not pad with extra sentences, extra list items, or inline citations.`;
 
 function buildUserPrompt(answers: OnboardingAnswers): string {
   return `Company name: ${answers.companyName}
@@ -115,7 +115,16 @@ Research this company's real competitors on the web and produce the full Competi
 }
 
 function extractJson(text: string): unknown {
-  const trimmed = text.trim();
+  // Claude's web-search tool sometimes emits inline citation markup like
+  // <cite index="9-1,9-2">...</cite> around researched claims, despite the
+  // "no citation markup" instruction, and the quotes inside the tag's
+  // attribute are inconsistently escaped relative to the surrounding JSON
+  // string — sometimes \" (valid), sometimes a bare " (which prematurely
+  // terminates the JSON string and corrupts everything after it). Stripping
+  // the tags outright — both open and close — before any parse attempt
+  // sidesteps this regardless of how the model escapes them.
+  const withoutCitations = text.replace(/<\/?cite[^>]*>/gi, "");
+  const trimmed = withoutCitations.trim();
   try {
     return JSON.parse(trimmed);
   } catch {
@@ -129,13 +138,43 @@ function extractJson(text: string): unknown {
       // fall through
     }
   }
+  // Scan for a balanced {...} block via brace-depth tracking, robust to
+  // leading and/or trailing prose the model may add despite the "no prose"
+  // instruction (more common at lower effort levels) — unlike a naive
+  // lastIndexOf("}"), this can't be thrown off by braces in trailing text
+  // or by braces that happen to appear inside string values.
   const firstBrace = trimmed.indexOf("{");
-  const lastBrace = trimmed.lastIndexOf("}");
-  if (firstBrace !== -1 && lastBrace > firstBrace) {
-    try {
-      return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1));
-    } catch {
-      // fall through
+  if (firstBrace !== -1) {
+    let depth = 0;
+    let inString = false;
+    let escapeNext = false;
+    for (let i = firstBrace; i < trimmed.length; i++) {
+      const ch = trimmed[i];
+      if (escapeNext) {
+        escapeNext = false;
+        continue;
+      }
+      if (ch === "\\") {
+        escapeNext = true;
+        continue;
+      }
+      if (ch === '"') {
+        inString = !inString;
+        continue;
+      }
+      if (inString) continue;
+      if (ch === "{") {
+        depth++;
+      } else if (ch === "}") {
+        depth--;
+        if (depth === 0) {
+          try {
+            return JSON.parse(trimmed.slice(firstBrace, i + 1));
+          } catch {
+            break;
+          }
+        }
+      }
     }
   }
   throw new Error("Could not extract JSON from model response");
@@ -161,11 +200,20 @@ export async function generateReport(
         model: MODEL,
         max_tokens: 16000,
         system: SYSTEM_PROMPT,
+        // Opus 5 defaults to effort "high" with thinking on when neither is
+        // set — that combination was taking ~5 minutes per report. Lower
+        // effort plus a tighter search budget cuts this dramatically while
+        // keeping real web-researched output (see the research-standards
+        // prompt change above, which matches this lower max_uses).
+        // (Explicitly disabling thinking was tried and measured worse —
+        // higher and more variable latency, likely from less efficient
+        // search planning — so adaptive thinking at low effort is kept.)
+        output_config: { effort: "low" },
         tools: [
           {
             type: "web_search_20260209",
             name: "web_search",
-            max_uses: 10,
+            max_uses: 2,
           },
         ],
         messages,
@@ -184,6 +232,10 @@ export async function generateReport(
       if (message.stop_reason === "pause_turn") {
         messages = [...messages, { role: "assistant", content: message.content }];
         continue;
+      }
+      if (process.env.DEBUG_REPORT_GEN) {
+        console.error("DEBUG stop_reason:", message.stop_reason);
+        console.error("DEBUG finalText:", finalText);
       }
       break;
     }
