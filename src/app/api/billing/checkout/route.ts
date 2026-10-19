@@ -8,6 +8,7 @@ import { PAID_PLANS, type PlanId } from "@/lib/plans";
 const bodySchema = z.object({
   plan: z.enum(["starter", "growth", "agency"]),
   interval: z.enum(["month", "year"]),
+  code: z.string().trim().max(40).optional(),
 });
 
 export async function POST(request: Request) {
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
 
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Choose a plan." }, { status: 400 });
-  const { plan, interval } = parsed.data;
+  const { plan, interval, code } = parsed.data;
 
   // Someone who already subscribes changes plan in the billing portal, so they
   // are never charged for two subscriptions at once.
@@ -51,11 +52,12 @@ export async function POST(request: Request) {
       plan: plan as (typeof PAID_PLANS)[number],
       interval,
       origin: new URL(request.url).origin,
+      promoCode: code || undefined,
     });
     return NextResponse.json({ mode: "stripe" as const, url });
   } catch (err) {
     console.error("[billing] checkout failed:", err);
     const message = err instanceof BillingError ? err.message : "We could not start the checkout. Please try again.";
-    return NextResponse.json({ error: message }, { status: 502 });
+    return NextResponse.json({ error: message }, { status: err instanceof BillingError ? 400 : 502 });
   }
 }

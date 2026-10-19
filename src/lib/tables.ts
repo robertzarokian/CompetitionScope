@@ -104,6 +104,16 @@ export function ensureTables(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
         CREATE INDEX IF NOT EXISTS admin_log_idx ON admin_log (created_at DESC);
+        CREATE TABLE IF NOT EXISTS promo_signups (
+          id TEXT PRIMARY KEY,
+          email TEXT NOT NULL,
+          email_lower TEXT NOT NULL UNIQUE,
+          code TEXT NOT NULL UNIQUE,
+          stripe_promotion_id TEXT NOT NULL,
+          emailed BOOLEAN NOT NULL DEFAULT false,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          expires_at TIMESTAMPTZ NOT NULL
+        );
         `
       )
       .then(() => undefined);

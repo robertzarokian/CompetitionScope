@@ -23,6 +23,7 @@ export default function PrivacyPage() {
             "Account details: your email address and a password. We never store your password itself, only a scrambled version that cannot be read back.",
             "What you tell us: your answers when you create a report or run an audit, such as your company name, website, what you sell, where you struggle, competitors you know, and the questions you want AI to answer.",
             "Payment details: handled entirely by Stripe. Your card number never reaches our servers. We keep only your plan, billing period, and subscription status.",
+            "Discount signups: if you enter your email in our welcome popup, we store it with the single-use discount code we create for you and email that code to you. Only people who use the popup get a code.",
             "Technical details: your IP address and basic request data, used to prevent abuse, limit repeated requests, and keep the service secure. We use a login cookie to keep you signed in. We do not use advertising cookies.",
           ],
         },

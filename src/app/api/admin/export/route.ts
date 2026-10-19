@@ -35,6 +35,12 @@ export async function GET(request: Request) {
         return [r.id, r.created_at?.toISOString(), r.source, r.unlocked, a.email, a.companyName, a.website, a.category, a.description, a.struggles, a.salesConfidence, a.potentialGap, a.knownCompetitors, (a.marketingChannels ?? []).join("; ")];
       }),
     ]);
+  } else if (type === "leads") {
+    const res = await pool().query("SELECT email, code, emailed, created_at, expires_at FROM promo_signups ORDER BY created_at DESC");
+    body = csv([
+      ["Email", "Code", "Code emailed", "Signed up", "Code expires"],
+      ...res.rows.map((r) => [r.email, r.code, r.emailed, r.created_at?.toISOString(), r.expires_at?.toISOString()]),
+    ]);
   } else {
     return NextResponse.json({ error: "Unknown export." }, { status: 400 });
   }

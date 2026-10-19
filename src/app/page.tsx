@@ -12,6 +12,7 @@ import { CtaBand } from "@/components/site/CtaBand";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Reveal } from "@/components/site/Reveal";
 import { ServicePicker } from "@/components/landing/ServicePicker";
+import { PromoPopup } from "@/components/landing/PromoPopup";
 import { STARTING_PRICE_LABEL } from "@/lib/plans";
 import { FAQS, LINKEDIN_URL, SITE_URL, STEPS } from "@/lib/site";
 
@@ -74,6 +75,8 @@ export default function Home() {
           ],
         }}
       />
+
+      <PromoPopup />
 
       <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-14 pt-4 sm:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
         <div>

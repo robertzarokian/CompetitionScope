@@ -8,6 +8,7 @@ import {
 } from "./account";
 import { PLANS, isPlanId, priceCents, type BillingInterval, type PlanId } from "./plans";
 import { ensureTables, pool } from "./tables";
+import { checkPromoCode } from "./promo";
 
 export function stripeClient(): Stripe | null {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -50,6 +51,7 @@ export async function createCheckoutUrl(args: {
   plan: PlanId;
   interval: BillingInterval;
   origin: string;
+  promoCode?: string;
 }): Promise<string> {
   const stripe = stripeClient();
   if (!stripe) throw new BillingError("Payments are not set up yet.");
@@ -58,6 +60,16 @@ export async function createCheckoutUrl(args: {
   const plan = PLANS[args.plan];
   const existing = await getSubscription(args.userId);
   const metadata = { userId: args.userId, plan: args.plan, interval: args.interval };
+
+  // The popup discount is 25% off the first month, so it only applies to
+  // monthly billing. With a code applied, Stripe is given that exact code.
+  let promotionId: string | null = null;
+  if (args.promoCode) {
+    if (args.interval !== "month") throw new BillingError("Discount codes work on monthly billing. Switch to Monthly to use yours.");
+    const check = await checkPromoCode(args.promoCode);
+    if (!check.ok) throw new BillingError(check.error);
+    promotionId = check.promotionId;
+  }
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
@@ -80,7 +92,7 @@ export async function createCheckoutUrl(args: {
     cancel_url: `${args.origin}/pricing`,
     metadata,
     subscription_data: { metadata },
-    allow_promotion_codes: true,
+    ...(promotionId ? { discounts: [{ promotion_code: promotionId }] } : { allow_promotion_codes: args.interval === "month" }),
   });
   if (!session.url) throw new BillingError("Stripe did not return a checkout address.");
   return session.url;

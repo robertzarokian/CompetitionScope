@@ -65,6 +65,7 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
           currentPlan={currentPlan}
           loggedIn={!!userId}
           autoPlan={wanted ? { plan: wanted, interval } : null}
+          initialCode={typeof sp.code === "string" ? sp.code.slice(0, 40) : undefined}
         />
       </section>
 

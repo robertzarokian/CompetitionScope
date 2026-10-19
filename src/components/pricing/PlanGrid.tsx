@@ -12,25 +12,57 @@ export function PlanGrid({
   currentPlan,
   loggedIn,
   autoPlan,
+  initialCode,
 }: {
   currentPlan: PlanId;
   loggedIn: boolean;
   // A plan chosen before logging in, resumed after sign-up.
   autoPlan?: { plan: PlanId; interval: BillingInterval } | null;
+  // A discount code from an email link, filled in for the customer to apply.
+  initialCode?: string;
 }) {
   const [interval, setInterval] = useState<BillingInterval>(autoPlan?.interval ?? "month");
   const [busy, setBusy] = useState<PlanId | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [codeOpen, setCodeOpen] = useState(!!initialCode);
+  const [codeInput, setCodeInput] = useState(initialCode ?? "");
+  const [codeBusy, setCodeBusy] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const [applied, setApplied] = useState<{ code: string; percent: number } | null>(null);
+
+  async function applyCode() {
+    setCodeError(null);
+    setCodeBusy(true);
+    try {
+      const res = await fetch("/api/promo/validate", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code: codeInput }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.error ?? "That code is not valid.");
+      setApplied({ code: codeInput.trim().toUpperCase(), percent: data.percent });
+    } catch (e) {
+      setApplied(null);
+      setCodeError(e instanceof Error ? e.message : "That code could not be checked.");
+    } finally {
+      setCodeBusy(false);
+    }
+  }
 
   async function choose(plan: PlanId) {
     setError(null);
+    if (applied && interval === "year" && currentPlan === "free") {
+      setError("Your discount code works on monthly billing. Switch to Monthly to use it.");
+      return;
+    }
     setBusy(plan);
     try {
       // Someone already subscribed changes or cancels in the billing portal.
       const res = await fetch(currentPlan === "free" ? "/api/billing/checkout" : "/api/billing/portal", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ plan, interval }),
+        body: JSON.stringify({ plan, interval, code: applied && interval === "month" ? applied.code : undefined }),
       });
       const data = await res.json().catch(() => ({}));
       if (data.mode === "manage") {
@@ -71,6 +103,64 @@ export function PlanGrid({
         </span>
       </div>
 
+      {currentPlan === "free" && (
+        <div className="mb-6 max-w-xl">
+          {!codeOpen && !applied ? (
+            <button
+              type="button"
+              onClick={() => setCodeOpen(true)}
+              className="font-mono text-[11px] uppercase tracking-[0.14em] text-brass-600 underline underline-offset-4"
+            >
+              Have a discount code?
+            </button>
+          ) : applied ? (
+            <p className="flex flex-wrap items-center gap-3 border border-emerald-700/30 bg-emerald-700/10 px-3.5 py-2.5 text-sm text-emerald-800">
+              <Check size={15} />
+              <span>
+                Code <span className="font-mono font-semibold">{applied.code}</span> applied: {applied.percent}% off your first month, then the normal price.
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setApplied(null);
+                  setCodeInput("");
+                }}
+                className="font-mono text-[11px] uppercase tracking-[0.1em] underline underline-offset-4"
+              >
+                Remove
+              </button>
+            </p>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (codeInput.trim()) void applyCode();
+              }}
+            >
+              <label htmlFor="promo-code" className="block text-sm font-medium text-navy-800">
+                Discount code <span className="font-normal text-navy-400">(optional)</span>
+              </label>
+              <div className="mt-1.5 flex gap-2">
+                <input
+                  id="promo-code"
+                  value={codeInput}
+                  onChange={(e) => setCodeInput(e.target.value)}
+                  placeholder="SCOPE-XXXXXX"
+                  maxLength={40}
+                  autoComplete="off"
+                  className="min-w-0 flex-1 border border-navy-600 bg-cream-50 px-3.5 py-2.5 font-mono text-sm uppercase text-navy-800 placeholder:text-navy-300 focus:border-brass-500 focus:outline-none focus:ring-2 focus:ring-brass-500/30"
+                />
+                <Button type="submit" variant="secondary" disabled={codeBusy || !codeInput.trim()}>
+                  {codeBusy && <Loader2 size={14} className="animate-spin" />}
+                  Apply
+                </Button>
+              </div>
+              {codeError && <p className="mt-1.5 text-xs text-red-700">{codeError}</p>}
+            </form>
+          )}
+        </div>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {ORDER.map((id) => {
           const plan = PLANS[id];
@@ -105,7 +195,9 @@ export function PlanGrid({
                   ? plan.tagline
                   : interval === "year"
                     ? `Billed ${formatPrice(plan.annualCents)} a year`
-                    : plan.tagline}
+                    : applied
+                      ? `First month ${formatPrice(Math.round(plan.monthlyCents * (1 - applied.percent / 100)))}, then ${formatPrice(plan.monthlyCents)}/month`
+                      : plan.tagline}
               </p>
               <ul className="mt-4 flex-1 space-y-2.5">
                 {plan.features.map((f) => (
@@ -138,7 +230,7 @@ export function PlanGrid({
                   </Button>
                 ) : (
                   <Link
-                    href={`/auth?next=${encodeURIComponent(`/pricing?plan=${id}&interval=${interval}`)}`}
+                    href={`/auth?next=${encodeURIComponent(`/pricing?plan=${id}&interval=${interval}${applied ? `&code=${applied.code}` : ""}`)}`}
                     className="inline-flex w-full items-center justify-center rounded-sm border border-brass-300 bg-brass-400 px-4 py-3 text-[13px] font-medium uppercase tracking-[0.05em] text-navy-950 shadow-[0_4px_0_0_rgba(90,66,32,0.9)] transition hover:bg-brass-300"
                   >
                     Choose {plan.name}
