@@ -20,9 +20,26 @@ const sizes = {
   lg: "text-sm px-8 py-3.5",
 };
 
+export type ButtonVariant = Variant;
+export type ButtonSize = keyof typeof sizes;
+
+// Shared with ButtonLink so links can look like buttons without nesting a
+// <button> inside an <a>.
+export function buttonClasses({
+  variant = "primary",
+  size = "md",
+  className = "",
+}: {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+} = {}) {
+  return `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+}
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
-  size?: keyof typeof sizes;
+  size?: ButtonSize;
   children: ReactNode;
 }
 
@@ -34,10 +51,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button
-      className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
-    >
+    <button className={buttonClasses({ variant, size, className })} {...props}>
       {children}
     </button>
   );

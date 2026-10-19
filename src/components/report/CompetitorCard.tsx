@@ -2,7 +2,16 @@ import { ExternalLink } from "lucide-react";
 import type { CompetitorProfile } from "@/lib/types";
 import { Panel } from "@/components/decor/Panel";
 
-export function CompetitorCard({ competitor }: { competitor: CompetitorProfile }) {
+export function CompetitorCard({
+  competitor,
+  asText = false,
+}: {
+  competitor: CompetitorProfile;
+  // Render the website as plain text, for fictional sample data that has no
+  // real site to link to.
+  asText?: boolean;
+}) {
+  const displayUrl = competitor.website.replace(/^https?:\/\//, "");
   return (
     <Panel
       eyebrow={`Competitor No. ${String(competitor.ranking).padStart(2, "0")}`}
@@ -12,15 +21,19 @@ export function CompetitorCard({ competitor }: { competitor: CompetitorProfile }
         <h3 className="font-display text-lg font-semibold text-navy-800">
           {competitor.name}
         </h3>
-        <a
-          href={competitor.website}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-1 inline-flex items-center gap-1 font-mono text-[11px] text-navy-400 hover:text-brass-600"
-        >
-          {competitor.website.replace(/^https?:\/\//, "")}
-          <ExternalLink size={11} />
-        </a>
+        {asText ? (
+          <p className="mt-1 font-mono text-[11px] text-navy-400">{displayUrl}</p>
+        ) : (
+          <a
+            href={competitor.website}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1 inline-flex items-center gap-1 font-mono text-[11px] text-navy-400 hover:text-brass-600"
+          >
+            {displayUrl}
+            <ExternalLink size={11} />
+          </a>
+        )}
 
         <p className="mt-4 text-sm leading-relaxed text-navy-500">{competitor.summary}</p>
 

@@ -36,7 +36,7 @@ export default async function ReportPreviewPage({
       <main className="relative mx-auto max-w-3xl px-6">
         {report.source === "mock" && (
           <div className="mb-6 border border-navy-300 bg-cream-200 px-4 py-3 text-center font-mono text-xs text-navy-400">
-            Sample report — demo mode is active because no live research API key is
+            Sample report. Demo mode is active because no live research API key is
             configured on this server.
           </div>
         )}
@@ -50,7 +50,7 @@ export default async function ReportPreviewPage({
             Here&rsquo;s what we found for {report.answers.companyName}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm text-navy-500 sm:text-base">
-            {`We researched ${report.competitors.length} of your closest competitors. Here's a preview — unlock the full report to see all of it, ranked and broken down.`}
+            {`We researched ${report.competitors.length} of your closest competitors. Here's a preview. Unlock the full report to see all of it, ranked and broken down.`}
           </p>
         </div>
 
@@ -144,7 +144,7 @@ export default async function ReportPreviewPage({
             Ready to see the whole picture?
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-cream-200">
-            Every competitor, every success factor, and a step-by-step roadmap —
+            Every competitor, every success factor, and a step-by-step roadmap,
             plus a branded PDF you can share with your team.
           </p>
           <div className="mx-auto mt-6 grid max-w-sm gap-2.5 text-left text-sm text-cream-200">

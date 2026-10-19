@@ -52,8 +52,8 @@ export default async function FullReportPage({
         {justPurchased && (
           <div className="mb-8 flex items-center justify-center gap-2 border border-brass-400/40 bg-brass-400/10 px-4 py-3 text-center text-sm text-brass-700">
             <PartyPopper size={16} />
-            You&rsquo;re unlocked. The full report is below — your branded PDF is
-            ready to download any time.
+            You&rsquo;re unlocked. The full report is below, and your branded PDF
+            is ready to download any time.
           </div>
         )}
 

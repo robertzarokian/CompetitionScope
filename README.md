@@ -47,6 +47,23 @@ of the demo experience to the real thing — nothing else needs to change.
 | `STRIPE_WEBHOOK_SECRET` | Enables `/api/checkout/webhook` to verify Stripe's `checkout.session.completed` webhook and unlock reports server-side. (Only relevant on the `STRIPE_SECRET_KEY` path — the success-redirect page also verifies the session directly, so purchases still unlock correctly without a working webhook, useful for local testing since Stripe can't reach `localhost`.) |
 | `AUTH_SECRET` | Signing secret for session JWTs. A dev-only default is used if unset — **set a real random secret before deploying**. |
 
+### AI visibility audit (`/ai-visibility`)
+
+Every key is optional. A platform or data source is simply switched off until its key is added (`/api/audit/config` reports which are on). `ANTHROPIC_API_KEY` (above) powers the Claude platform and the step that reads each answer.
+
+| Variable | What it enables |
+| --- | --- |
+| `OPENAI_API_KEY` | Checks ChatGPT through the Responses API with web search. `OPENAI_MODEL` overrides the model (default `gpt-6-astra`, the model used in OpenAI's docs). |
+| `PERPLEXITY_API_KEY` | Checks Perplexity through its Agent API (the old Sonar chat endpoint was retired 2026-09-27). `PERPLEXITY_PRESET` overrides the preset (default `fast`). |
+| `GEMINI_API_KEY` | Checks Gemini through the Interactions API with Google Search grounding. `GEMINI_MODEL` overrides the model (default `gemini-3.8-flash`). |
+| `XAI_API_KEY` | Checks Grok through the Responses API with web search. `XAI_MODEL` overrides the model (default `grok-4.7`). |
+| `DATAFORSEO_LOGIN`, `DATAFORSEO_PASSWORD` | Enables the backlinks panel (DataForSEO Backlinks Summary, a few cents per site). Use the API credentials from app.dataforseo.com/api-access, not the account password. |
+| `GOOGLE_PAGESPEED_API_KEY` | Recommended. Without it, Google's shared free quota for the speed test is often exhausted. |
+| `AUDIT_CLAUDE_MODEL` | Model for the Claude platform and answer reading (default `claude-opus-5`). |
+| `AUDIT_DAILY_VISIBILITY_LIMIT`, `AUDIT_DAILY_BACKLINK_LIMIT` | Site-wide daily caps on paid API calls (defaults 400 and 100). Visitors are also limited per hour by IP. |
+
+The ChatGPT, Perplexity, Gemini, Grok, and backlinks adapters were written from each vendor's current docs and tested against mocked responses, not against live accounts. Check each one with a real key before relying on it.
+
 To point a Stripe webhook at local dev, use the Stripe CLI: `stripe listen --forward-to localhost:3000/api/checkout/webhook`.
 
 To use `STRIPE_PAYMENT_LINK`, open the Payment Link in the Stripe Dashboard → **After payment** → set a custom confirmation page → `https://<your-domain>/api/checkout/return`. This is a manual one-time Dashboard step; there's no API to configure it from code without a secret key.
@@ -80,6 +97,14 @@ To use `STRIPE_PAYMENT_LINK`, open the Payment Link in the Stripe Dashboard → 
     breaks parsing. `extractJson` strips `<cite>`/`</cite>` tags before parsing
     (in addition to the prompt asking Claude not to emit them) — don't remove this
     without re-testing against real (not mocked) API responses.
+- **AI visibility audit** (`src/lib/audit/`, `src/app/api/audit/`, `src/components/audit/`) is a
+  free public tool. The browser drives it step by step (website checks, a speed test, then each
+  AI platform answering each question twice), so no single request runs long. Each platform is an
+  adapter in `providers/` that returns the answer text plus numbered sources; Claude then reads
+  each answer into a ranked list of brands and the sources behind each (`extract.ts`), and
+  `analysis.ts` rolls everything up. Because visitors are anonymous and the tool spends money,
+  every route validates its input, counts usage in Postgres (`src/lib/rateLimit.ts`), and fetches
+  visitor-supplied URLs only through `safeFetch.ts`, which blocks private addresses (SSRF).
 - **Payments**: `src/app/api/checkout/create` returns `{mode: "stripe"}` or
   `{mode: "demo"}` depending on whether `STRIPE_SECRET_KEY` is set, and the client
   branches accordingly. Report unlocking on the Stripe path is confirmed two ways: the
@@ -94,6 +119,9 @@ To use `STRIPE_PAYMENT_LINK`, open the Payment Link in the Stripe Dashboard → 
 ```
 src/
   app/                    Routes (App Router)
+    /, how-it-works, pricing,       Static marketing pages (shared header/footer in
+    sample-report, faq              components/site). Copy and FAQ answers live in lib/site.ts
+    sitemap.ts, robots.ts           Generated sitemap.xml and robots.txt
     onboarding/(questions)/[step]   One question per page, progress bar
     onboarding/loading              Calculating screen -> generates the report
     report/[id]                     Free preview (blurred paywall sections)
@@ -102,7 +130,8 @@ src/
     auth, start                     Sign up / log in (skippable vs. required)
     api/                            Route handlers (auth, report, checkout)
   components/              UI components, grouped by feature
-  lib/                      Business logic: db, auth, questions, report generation, pdf, pricing
+  lib/                      Business logic: db, auth, questions, report generation, pdf, pricing,
+                            site copy (site.ts), fictional sample report (sampleReport.ts)
 ```
 
 This is a Next.js project bootstrapped with `create-next-app`. See the

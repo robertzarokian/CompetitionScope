@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Besley, Karla, IBM_Plex_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const besley = Besley({
@@ -22,9 +23,17 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CompetitionScope — See Your Competition Clearly",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "CompetitionScope: See Your Competition Clearly",
+    template: "%s | CompetitionScope",
+  },
   description:
-    "Point CompetitionScope at your competitors. Get an AI-powered deep dive on your closest rivals — their strategy, their edge, and exactly what to do about it.",
+    "Point CompetitionScope at your competitors. Get an AI-powered deep dive on your closest rivals, including their strategy, their edge, and exactly what to do about it.",
+  openGraph: {
+    siteName: "CompetitionScope",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

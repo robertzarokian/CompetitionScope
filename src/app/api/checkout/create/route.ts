@@ -50,7 +50,7 @@ export async function POST(request: Request) {
             currency: "usd",
             unit_amount: REPORT_PRICE_CENTS,
             product_data: {
-              name: `CompetitionScope Report — ${report.answers.companyName || "Your Company"}`,
+              name: `CompetitionScope Report: ${report.answers.companyName || "Your Company"}`,
               description:
                 "Full competitor breakdown, success factors, and roadmap, plus a branded PDF export.",
             },

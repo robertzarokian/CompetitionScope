@@ -13,7 +13,7 @@ declare global {
   var __pgPool: Pool | undefined;
 }
 
-function getPool(): Pool {
+export function getPool(): Pool {
   if (!global.__pgPool) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {

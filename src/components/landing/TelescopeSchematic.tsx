@@ -16,7 +16,7 @@ export function TelescopeSchematic() {
 
       <div className="relative flex items-center justify-between border-b border-navy-600 px-5 py-2.5">
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream-300">
-          Fig. 01 — Field Instrument
+          Fig. 01: Field Instrument
         </span>
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-brass-400">
           Scale 1:4

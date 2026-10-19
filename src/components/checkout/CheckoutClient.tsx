@@ -123,10 +123,10 @@ export function CheckoutClient({
       <div className="card-glow paper-panel border border-navy-600 p-6">
         <div className="mb-4 flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide text-brass-600">
           <Sparkles size={14} />
-          Demo checkout mode — no Stripe key configured
+          Demo checkout mode: no Stripe key configured
         </div>
         <p className="mb-5 text-xs text-navy-400">
-          This is a working demo of the payment flow. Enter anything below — no
+          This is a working demo of the payment flow. Enter anything below. No
           card is charged. Add a <code className="text-navy-500">STRIPE_SECRET_KEY</code>{" "}
           to switch to real payments.
         </p>
