@@ -5,7 +5,7 @@ export const SITE_URL = "https://www.competitionscope.com";
 export const NAV_LINKS = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/sample-report", label: "Sample report" },
-  { href: "/ai-visibility", label: "AI visibility" },
+  { href: "/ai-seo", label: "AI SEO" },
   { href: "/pricing", label: "Pricing" },
   { href: "/faq", label: "FAQ" },
 ] as const;

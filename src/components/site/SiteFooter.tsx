@@ -47,6 +47,14 @@ export function SiteFooter() {
             </li>
             <li>
               <Link
+                href="/ai-seo/audit"
+                className="text-sm text-navy-500 transition-colors hover:text-navy-800"
+              >
+                Free AI visibility audit
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/sample-report"
                 className="text-sm text-navy-500 transition-colors hover:text-navy-800"
               >

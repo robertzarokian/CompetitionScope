@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageShell } from "@/components/site/PageShell";
 import { PageHero } from "@/components/site/SectionHeading";
 import { AuditTool } from "@/components/audit/AuditTool";
+import { AiSeoNav } from "@/components/aiseo/AiSeoNav";
 import { JsonLd } from "@/components/site/JsonLd";
 import { SITE_URL } from "@/lib/site";
 
@@ -9,10 +10,10 @@ export const metadata: Metadata = {
   title: "AI Visibility Audit: Does AI Recommend Your Business?",
   description:
     "Find out whether AI assistants recommend your company, which competitors they name instead, and which websites those answers rely on. Includes a free website SEO check.",
-  alternates: { canonical: "/ai-visibility" },
+  alternates: { canonical: "/ai-seo/audit" },
 };
 
-export default function AiVisibilityPage() {
+export default function AiSeoAuditPage() {
   return (
     <PageShell>
       <JsonLd
@@ -20,11 +21,12 @@ export default function AiVisibilityPage() {
           "@context": "https://schema.org",
           "@type": "WebApplication",
           name: "CompetitionScope AI Visibility Audit",
-          url: `${SITE_URL}/ai-visibility`,
+          url: `${SITE_URL}/ai-seo/audit`,
           applicationCategory: "BusinessApplication",
           operatingSystem: "Any",
         }}
       />
+      <AiSeoNav />
       <PageHero
         eyebrow="AI visibility audit"
         title="Does AI recommend your business?"

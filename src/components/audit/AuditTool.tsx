@@ -236,7 +236,7 @@ export function AuditTool() {
             you upgrade later to track changes over time.
           </p>
           <Link
-            href={`/auth?next=${encodeURIComponent("/ai-visibility")}`}
+            href={`/auth?next=${encodeURIComponent("/ai-seo/audit")}`}
             className="inline-flex items-center justify-center rounded-sm border border-brass-300 bg-brass-400 px-6 py-3 text-[13px] font-medium uppercase tracking-[0.05em] text-navy-950 shadow-[0_4px_0_0_rgba(90,66,32,0.9)] transition hover:bg-brass-300"
           >
             Create account or log in

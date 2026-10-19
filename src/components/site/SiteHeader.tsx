@@ -8,6 +8,8 @@ import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ButtonLink";
 import { NAV_LINKS } from "@/lib/site";
 
+const isActive = (path: string, href: string) => path === href || path.startsWith(`${href}/`);
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -30,9 +32,9 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              aria-current={pathname === link.href ? "page" : undefined}
+              aria-current={isActive(pathname, link.href) ? "page" : undefined}
               className={`font-mono text-[11px] uppercase tracking-[0.14em] transition-colors hover:text-brass-600 ${
-                pathname === link.href ? "text-brass-600" : "text-navy-500"
+                isActive(pathname, link.href) ? "text-brass-600" : "text-navy-500"
               }`}
             >
               {link.label}
@@ -72,7 +74,7 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              aria-current={pathname === link.href ? "page" : undefined}
+              aria-current={isActive(pathname, link.href) ? "page" : undefined}
               className="py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-navy-700"
             >
               {link.label}
