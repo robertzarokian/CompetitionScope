@@ -71,6 +71,14 @@ export function SiteFooter() {
         <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-navy-400">
           © {new Date().getFullYear()} CompetitionScope. See the competition clearly.
         </p>
+        <p className="mt-2">
+          <Link
+            href="/admin/login"
+            className="font-mono text-[11px] uppercase tracking-[0.1em] text-navy-300 transition-colors hover:text-navy-600"
+          >
+            Admin login
+          </Link>
+        </p>
       </div>
     </footer>
   );

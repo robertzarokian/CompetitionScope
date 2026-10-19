@@ -80,6 +80,30 @@ export function ensureTables(): Promise<void> {
           emailed BOOLEAN NOT NULL DEFAULT false
         );
         CREATE INDEX IF NOT EXISTS alerts_user_idx ON alerts (user_id, created_at DESC);
+        CREATE TABLE IF NOT EXISTS admins (
+          id TEXT PRIMARY KEY,
+          username TEXT NOT NULL,
+          username_lower TEXT UNIQUE NOT NULL,
+          password_hash TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          created_by TEXT,
+          disabled BOOLEAN NOT NULL DEFAULT false
+        );
+        CREATE TABLE IF NOT EXISTS admin_sessions (
+          token_hash TEXT PRIMARY KEY,
+          admin_id TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          expires_at TIMESTAMPTZ NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS admin_log (
+          id TEXT PRIMARY KEY,
+          admin_id TEXT,
+          admin_username TEXT NOT NULL,
+          action TEXT NOT NULL,
+          detail TEXT NOT NULL DEFAULT '',
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+        CREATE INDEX IF NOT EXISTS admin_log_idx ON admin_log (created_at DESC);
         `
       )
       .then(() => undefined);
