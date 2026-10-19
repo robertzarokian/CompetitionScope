@@ -3,6 +3,7 @@ import { PageShell } from "@/components/site/PageShell";
 import { PageHero } from "@/components/site/SectionHeading";
 import { CtaBand } from "@/components/site/CtaBand";
 import { AiSeoNav } from "@/components/aiseo/AiSeoNav";
+import { PlansIncluded } from "@/components/aiseo/PlansIncluded";
 import { AI_SEO_CHECKS } from "@/lib/aiseo";
 
 export const metadata: Metadata = {
@@ -41,6 +42,7 @@ export default function ChecklistPage() {
           ))}
         </ol>
       </section>
+      <PlansIncluded />
       <CtaBand
         title="See how your site scores."
         body="Run the free audit and get all 12 checks for your own website."

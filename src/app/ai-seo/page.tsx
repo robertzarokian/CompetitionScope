@@ -10,6 +10,7 @@ import { JsonLd } from "@/components/site/JsonLd";
 import { Reveal } from "@/components/site/Reveal";
 import { AiSeoNav } from "@/components/aiseo/AiSeoNav";
 import { AiAnswerDemo } from "@/components/aiseo/AiAnswerDemo";
+import { PlansIncluded } from "@/components/aiseo/PlansIncluded";
 import { AI_SEO_CHECKS, AI_SEO_FAQS, AI_SEO_STEPS } from "@/lib/aiseo";
 import { SITE_URL } from "@/lib/site";
 
@@ -128,6 +129,8 @@ export default function AiSeoPage() {
           </div>
         </div>
       </section>
+
+      <PlansIncluded />
 
       <section className="border-t border-navy-300/60 py-14">
         <div className="mx-auto w-full max-w-3xl px-6 sm:px-10">

@@ -86,7 +86,7 @@ export const FAQS: FaqItem[] = [
     id: "cancel",
     question: "Can I cancel anytime?",
     answer:
-      "Yes. You can cancel from your dashboard whenever you like. You keep access until the end of the period you already paid for, and your history stays saved.",
+      "Yes. You can cancel from your dashboard whenever you like. You keep access until the end of the period you already paid for, and your history stays saved. New paid plans also have a 7 day money-back guarantee, explained on our refund policy page.",
   },
   {
     id: "alerts-scope",
@@ -131,3 +131,7 @@ export const FAQS: FaqItem[] = [
       "Yes. With a plan, the company you track is re-checked automatically (monthly on Starter, weekly on Growth and Agency). You can also start a new scope any time for another company.",
   },
 ];
+
+// Where customers can reach us about privacy, billing, and refunds.
+export const CONTACT_NOTE = "message us through our LinkedIn company page";
+export const LEGAL_UPDATED = "October 19, 2026";

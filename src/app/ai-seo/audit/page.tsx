@@ -3,6 +3,7 @@ import { PageShell } from "@/components/site/PageShell";
 import { PageHero } from "@/components/site/SectionHeading";
 import { AuditTool } from "@/components/audit/AuditTool";
 import { AiSeoNav } from "@/components/aiseo/AiSeoNav";
+import { PlansIncluded } from "@/components/aiseo/PlansIncluded";
 import { JsonLd } from "@/components/site/JsonLd";
 import { SITE_URL } from "@/lib/site";
 
@@ -35,6 +36,7 @@ export default function AiSeoAuditPage() {
       <section className="mx-auto w-full max-w-4xl px-6 pb-16 sm:px-10">
         <AuditTool />
       </section>
+      <PlansIncluded />
     </PageShell>
   );
 }

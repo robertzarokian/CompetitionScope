@@ -79,6 +79,21 @@ export function SiteFooter() {
         <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-navy-400">
           © {new Date().getFullYear()} CompetitionScope. See the competition clearly.
         </p>
+        <p className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
+          {[
+            ["/privacy", "Privacy"],
+            ["/terms", "Terms"],
+            ["/refunds", "Refunds"],
+          ].map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              className="font-mono text-[11px] uppercase tracking-[0.1em] text-navy-400 transition-colors hover:text-navy-700"
+            >
+              {label}
+            </Link>
+          ))}
+        </p>
         <p className="mt-2">
           <Link
             href="/admin/login"
