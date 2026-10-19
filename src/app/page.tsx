@@ -11,7 +11,7 @@ import { FaqList } from "@/components/site/FaqList";
 import { CtaBand } from "@/components/site/CtaBand";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Reveal } from "@/components/site/Reveal";
-import { AiAnswerDemo } from "@/components/aiseo/AiAnswerDemo";
+import { ServicePicker } from "@/components/landing/ServicePicker";
 import { STARTING_PRICE_LABEL } from "@/lib/plans";
 import { FAQS, LINKEDIN_URL, SITE_URL, STEPS } from "@/lib/site";
 
@@ -46,13 +46,6 @@ const HERO_FACTS = [
   "10 short questions",
   "Researched on the live web",
   `Free preview, plans from ${STARTING_PRICE_LABEL}/month`,
-];
-
-const AI_SEO_POINTS = [
-  "Which companies AI recommends for your customers' questions",
-  "The websites those answers rely on, so you know where to be listed",
-  "A 12 point check of your site, speed, and backlinks versus competitors",
-  "Re-checks and alerts on paid plans when your visibility changes",
 ];
 
 const HOME_FAQ_IDS = ["what", "time", "free", "accuracy"];
@@ -125,14 +118,6 @@ export default function Home() {
               See a sample report
             </ButtonLink>
           </div>
-          <Link
-            href="/ai-seo"
-            className="mt-5 inline-flex items-center gap-2 border border-brass-500/40 bg-cream-50 px-3 py-1.5 text-[13px] text-navy-700 transition-colors hover:border-brass-500"
-          >
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-brass-600">New</span>
-            Does AI recommend your business? Try the AI SEO audit
-            <ArrowRight size={13} className="text-brass-500" />
-          </Link>
           <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2">
             {HERO_FACTS.map((fact) => (
               <li
@@ -148,34 +133,10 @@ export default function Home() {
         <TelescopeSchematic />
       </section>
 
-      <section id="ai-seo" className="relative border-t border-navy-300/60 py-14">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 sm:px-10 lg:grid-cols-[1fr_1.05fr]">
+      <section id="services" className="relative border-t border-navy-300/60 py-14">
+        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
           <Reveal>
-            <SectionHeading
-              label="AI SEO"
-              title="Customers now ask AI who to hire. Are you on the list?"
-              body="Our AI Visibility Audit asks the AI assistants your customers' questions, shows which companies get recommended, and traces the websites behind each answer. Then it checks your own site and backlinks against your rivals."
-            />
-            <ul className="mt-6 space-y-2.5">
-              {AI_SEO_POINTS.map((point) => (
-                <li key={point} className="flex items-start gap-2.5 text-[14.5px] text-navy-600">
-                  <Check size={16} className="mt-0.5 shrink-0 text-brass-500" />
-                  {point}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <ButtonLink href="/ai-seo/audit" size="lg">
-                Start your audit
-                <ArrowRight size={16} />
-              </ButtonLink>
-              <ButtonLink href="/ai-seo" variant="secondary" size="lg">
-                Explore AI SEO
-              </ButtonLink>
-            </div>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <AiAnswerDemo />
+            <ServicePicker />
           </Reveal>
         </div>
       </section>
@@ -264,6 +225,22 @@ export default function Home() {
           <Reveal>
             <BlindSpotCalculator />
           </Reveal>
+        </div>
+      </section>
+
+      <section id="ai-seo" className="relative border-t border-navy-300/60 py-10">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 sm:px-10">
+          <p className="max-w-2xl text-[14.5px] leading-relaxed text-navy-500">
+            <span className="font-semibold text-navy-800">Also available: AI SEO.</span> Customers increasingly ask AI
+            assistants who to hire. Our optional audit shows whether you get named and what to change.
+          </p>
+          <Link
+            href="/ai-seo"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-brass-600 underline-offset-4 hover:underline"
+          >
+            Explore AI SEO
+            <ArrowRight size={13} />
+          </Link>
         </div>
       </section>
 
