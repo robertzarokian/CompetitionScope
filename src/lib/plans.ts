@@ -42,7 +42,7 @@ export const PLANS: Record<PlanId, Plan> = {
     tagline: "Try it before you pay",
     monthlyCents: 0,
     annualCents: 0,
-    features: ["Preview report with your first competitor", "One AI visibility audit", "Website SEO check"],
+    features: ["Preview report with your first competitor", "Executive summary and first insight"],
     limits: {
       fullReports: false,
       pdf: false,

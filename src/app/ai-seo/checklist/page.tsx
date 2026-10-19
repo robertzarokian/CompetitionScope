@@ -45,9 +45,9 @@ export default function ChecklistPage() {
       <PlansIncluded />
       <CtaBand
         title="See how your site scores."
-        body="Run the free audit and get all 12 checks for your own website."
+        body="Run the audit and get all 12 checks for your own website."
         ctaHref="/ai-seo/audit"
-        ctaLabel="Run the free audit"
+        ctaLabel="Start your audit"
         linkHref="/ai-seo/what-is-ai-seo"
         linkLabel="What is AI SEO?"
       />

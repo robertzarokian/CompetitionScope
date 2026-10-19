@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Loader2, Minus, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/Button";
+import { ButtonLink } from "@/components/ButtonLink";
 import { Panel } from "@/components/decor/Panel";
 import { AuditForm } from "./AuditForm";
 import { SiteChecksPanel } from "./SiteChecksPanel";
@@ -16,6 +17,7 @@ import { speedCheckRow } from "@/lib/audit/pagespeed-row";
 import type { AuditInput, BacklinkRow, SiteAuditResult, SpeedResult, VisibilityRun } from "@/lib/audit/schema";
 
 const RUNS_PER_QUESTION = 2;
+const DRAFT_KEY = "cs_audit_draft";
 const CONCURRENCY = 3;
 
 interface Config {
@@ -63,7 +65,10 @@ function StepIcon({ step }: { step: Step }) {
 export function AuditTool() {
   const [config, setConfig] = useState<Config | null>(null);
   const [configError, setConfigError] = useState(false);
-  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  // null while loading; "none" when logged out; otherwise the plan id.
+  const [plan, setPlan] = useState<string | null>(null);
+  const [locked, setLocked] = useState<AuditInput | null>(null);
+  const [draft, setDraft] = useState<AuditInput | undefined>(undefined);
   const [startError, setStartError] = useState<string | null>(null);
   const [input, setInput] = useState<AuditInput | null>(null);
   const [started, setStarted] = useState(false);
@@ -84,10 +89,19 @@ export function AuditTool() {
       .then((r) => r.json())
       .then((c: Config) => setConfig(c))
       .catch(() => setConfigError(true));
-    fetch("/api/auth/me")
+    fetch("/api/auth/me?plan=1")
       .then((r) => r.json())
-      .then((d: { user: unknown }) => setLoggedIn(!!d.user))
-      .catch(() => setLoggedIn(false));
+      .then((d: { user: unknown; plan?: string }) => {
+        setPlan(d.user ? (d.plan ?? "free") : "none");
+        // Details typed before choosing a plan are restored once they come back.
+        try {
+          const saved = sessionStorage.getItem(DRAFT_KEY);
+          if (saved) setDraft(JSON.parse(saved) as AuditInput);
+        } catch {
+          /* storage may be unavailable */
+        }
+      })
+      .catch(() => setPlan("none"));
   }, []);
 
   const clientDomain = input ? cleanDomain(input.website) : null;
@@ -115,6 +129,24 @@ export function AuditTool() {
   async function start(values: AuditInput) {
     if (!config) return;
     reset();
+
+    // Free and logged-out visitors can fill in their details, but the audit
+    // itself is part of the paid plans. Keep what they typed for later.
+    if (plan !== "none" && plan !== "free" && plan !== null) {
+      try {
+        sessionStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
+    } else {
+      try {
+        sessionStorage.setItem(DRAFT_KEY, JSON.stringify(values));
+      } catch {
+        /* ignore */
+      }
+      setLocked(values);
+      return;
+    }
 
     // The server checks the plan and opens an audit session before anything runs.
     const begun = await post<{ auditId: string; providers: { id: string; label: string }[] }>("/api/audit/start", values);
@@ -226,21 +258,60 @@ export function AuditTool() {
     );
   }
 
-  if (loggedIn === false) {
+  if (plan === null) {
     return (
-      <Panel eyebrow="Free account" meta="Takes 30 seconds">
-        <div className="space-y-4 p-6">
-          <p className="font-display text-lg font-semibold text-navy-800">Create a free account to run your audit</p>
+      <Panel>
+        <p className="flex items-center gap-2 p-6 text-sm text-navy-500">
+          <Loader2 size={16} className="animate-spin" /> Loading the audit tool
+        </p>
+      </Panel>
+    );
+  }
+
+  if (locked) {
+    const n = locked.questions.length;
+    return (
+      <Panel eyebrow="AI visibility audit" meta={locked.companyName}>
+        <div className="space-y-5 p-6">
+          <p className="font-display text-xl font-semibold text-navy-800">Your audit for {locked.companyName} is ready to run</p>
           <p className="text-sm leading-relaxed text-navy-500">
-            Your free plan includes one AI visibility audit and a website check. An account keeps your results and lets
-            you upgrade later to track changes over time.
+            We will ask {config.providers.map((p) => p.label).join(" and ")} {n === 1 ? "your question" : `your ${n} questions`}, show who
+            gets recommended instead of you and which websites those answers rely on, then check your website against 12 points
+            and compare your backlinks with your competitors.
           </p>
-          <Link
-            href={`/auth?next=${encodeURIComponent("/ai-seo/audit")}`}
-            className="inline-flex items-center justify-center rounded-sm border border-brass-300 bg-brass-400 px-6 py-3 text-[13px] font-medium uppercase tracking-[0.05em] text-navy-950 shadow-[0_4px_0_0_rgba(90,66,32,0.9)] transition hover:bg-brass-300"
-          >
-            Create account or log in
-          </Link>
+          <ul className="space-y-1.5 text-sm text-navy-600">
+            {["Who AI recommends for your questions", "The sources behind each recommendation", "Your 12 point website check", "Backlinks versus your competitors"].map((t) => (
+              <li key={t} className="flex items-center gap-2">
+                <Check size={15} className="text-brass-500" />
+                {t}
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap items-center gap-4 pt-1">
+            <ButtonLink href="/pricing" size="lg">
+              Reveal AI visibility audit
+            </ButtonLink>
+            <button
+              type="button"
+              onClick={() => setLocked(null)}
+              className="font-mono text-[11px] uppercase tracking-[0.12em] text-navy-500 underline-offset-4 hover:underline"
+            >
+              Edit my details
+            </button>
+          </div>
+          <p className="text-xs text-navy-400">
+            Included with every paid plan. Your details are saved on this device, so you can run it as soon as you subscribe.
+            {plan === "none" && (
+              <>
+                {" "}
+                Already subscribed?{" "}
+                <Link href={`/auth?next=${encodeURIComponent("/ai-seo/audit")}`} className="underline underline-offset-2">
+                  Log in
+                </Link>
+                .
+              </>
+            )}
+          </p>
         </div>
       </Panel>
     );
@@ -269,9 +340,12 @@ export function AuditTool() {
             </div>
           )}
           <AuditForm
+            key={draft ? "draft" : "new"}
+            initial={draft}
             providerCount={config.providers.length}
             runsPerQuestion={RUNS_PER_QUESTION}
             disabled={false}
+            submitLabel={plan === "none" || plan === "free" ? "Continue" : "Run my audit"}
             onSubmit={(v) => void start(v)}
           />
         </>

@@ -7,8 +7,9 @@ import { PAID_PLANS, PLANS, formatPrice, type PlanId } from "@/lib/plans";
 // pricing page uses so the two can never disagree.
 function lines(id: PlanId): string[] {
   const p = PLANS[id];
-  if (id === "free") return ["1 AI visibility audit", "12 point website check", "Preview report"];
+  if (id === "free") return ["Preview report with your first competitor", "Executive summary and first insight"];
   const out = [
+    "Full AI visibility audit with 12 point website check",
     `Re-checked ${p.limits.checkEveryDays === 7 ? "every week" : "every month"}`,
     `${p.limits.questions} AI question${p.limits.questions === 1 ? "" : "s"} tracked${p.limits.clients > 1 ? " across your clients" : ""}`,
     p.limits.clients > 1 ? `Up to ${p.limits.clients} clients` : "1 company tracked",
@@ -27,7 +28,7 @@ export function PlansIncluded() {
         <SectionHeading
           label="Plans"
           title="What is included in each plan"
-          body="Start free with one audit. Paid plans keep watching, so you see whether your changes are working."
+          body="The AI visibility audit is included with every paid plan. Plans also keep watching, so you see whether your changes are working."
         />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {ids.map((id) => {

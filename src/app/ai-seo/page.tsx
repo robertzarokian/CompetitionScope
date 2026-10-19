@@ -17,7 +17,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "AI SEO: Get Recommended by ChatGPT, Claude, Gemini and More",
   description:
-    "AI SEO shows whether AI assistants recommend your business, why your competitors are named instead, and which websites those answers rely on. Free audit included.",
+    "AI SEO shows whether AI assistants recommend your business, why your competitors are named instead, and which websites those answers rely on.",
   alternates: { canonical: "/ai-seo" },
 };
 
@@ -54,7 +54,7 @@ export default function AiSeoPage() {
       />
       <section className="mx-auto -mt-2 flex w-full max-w-6xl flex-wrap items-center gap-3 px-6 pb-12 sm:px-10">
         <ButtonLink href="/ai-seo/audit" size="lg">
-          Run your free audit
+          Start your audit
           <ArrowRight size={16} />
         </ButtonLink>
         <ButtonLink href="/ai-seo/what-is-ai-seo" variant="secondary" size="lg">
@@ -143,9 +143,9 @@ export default function AiSeoPage() {
 
       <CtaBand
         title="Find out if AI recommends you."
-        body="Create a free account and run your first AI visibility audit."
+        body="Enter your details, then choose a plan to reveal your AI visibility audit."
         ctaHref="/ai-seo/audit"
-        ctaLabel="Run the free audit"
+        ctaLabel="Start your audit"
         linkHref="/ai-seo/what-is-ai-seo"
         linkLabel="What is AI SEO?"
       />

@@ -1,3 +1,4 @@
+import { STARTING_PRICE_LABEL } from "./plans";
 import type { FaqItem } from "./site";
 
 export const AI_SEO_LINKS = [
@@ -146,7 +147,7 @@ export const AI_SEO_FAQS: FaqItem[] = [
     id: "ai-free",
     question: "Is the AI Visibility Audit free?",
     answer:
-      "Every free account includes one audit with a website check. Paid plans include more audits and let you track your AI visibility over time with alerts when it changes.",
+      `The audit is included with every paid plan, from ${STARTING_PRICE_LABEL} a month. You can enter your details first and see exactly what you will get. Paid plans also re-run the audit on a schedule and alert you when your visibility changes.`,
   },
   {
     id: "ai-platforms",

@@ -22,7 +22,7 @@ type Cell = boolean | string;
 const MATRIX: { label: string; values: [Cell, Cell, Cell, Cell] }[] = [
   { label: "Preview report", values: [true, true, true, true] },
   { label: "Full competitor reports", values: [false, true, true, true] },
-  { label: "AI visibility audit", values: ["1 audit", true, true, true] },
+  { label: "AI visibility audit", values: [false, true, true, true] },
   { label: "Companies tracked", values: [false, "1", "1", "Up to 10"] },
   { label: "AI questions tracked", values: [false, "3", "10", "50 total"] },
   { label: "Competitors tracked per company", values: [false, "3", "5", "5"] },

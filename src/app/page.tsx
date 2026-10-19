@@ -130,7 +130,7 @@ export default function Home() {
             className="mt-5 inline-flex items-center gap-2 border border-brass-500/40 bg-cream-50 px-3 py-1.5 text-[13px] text-navy-700 transition-colors hover:border-brass-500"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-brass-600">New</span>
-            Does AI recommend your business? Free AI SEO audit
+            Does AI recommend your business? Try the AI SEO audit
             <ArrowRight size={13} className="text-brass-500" />
           </Link>
           <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2">
@@ -166,7 +166,7 @@ export default function Home() {
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <ButtonLink href="/ai-seo/audit" size="lg">
-                Run your free audit
+                Start your audit
                 <ArrowRight size={16} />
               </ButtonLink>
               <ButtonLink href="/ai-seo" variant="secondary" size="lg">

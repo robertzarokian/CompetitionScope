@@ -69,7 +69,7 @@ export const FAQS: FaqItem[] = [
     id: "free",
     question: "What do I get for free?",
     answer:
-      "A free preview with an executive summary, the one insight we noticed first, and your first competitor in full detail, plus one AI visibility audit and a website check. The rest of the report needs a plan.",
+      "A free preview with an executive summary, the one insight we noticed first, and your first competitor in full detail, The rest of the report, and the AI visibility audit, need a plan.",
   },
   {
     id: "included",
@@ -116,7 +116,7 @@ export const FAQS: FaqItem[] = [
     id: "account",
     question: "Do I need an account?",
     answer:
-      "Not to preview your report, which needs only your email. You create an account to run the AI visibility audit or to subscribe, so your reports, history, and alerts are saved.",
+      "Not to preview your report, which needs only your email. You create an account to subscribe, which unlocks the AI visibility audit, so your reports, history, and alerts are saved.",
   },
   {
     id: "pdf",

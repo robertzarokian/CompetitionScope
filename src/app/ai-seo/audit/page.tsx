@@ -10,7 +10,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "AI Visibility Audit: Does AI Recommend Your Business?",
   description:
-    "Find out whether AI assistants recommend your company, which competitors they name instead, and which websites those answers rely on. Includes a free website SEO check.",
+    "Find out whether AI assistants recommend your company, which competitors they name instead, and which websites those answers rely on. Includes a 12 point website check.",
   alternates: { canonical: "/ai-seo/audit" },
 };
 

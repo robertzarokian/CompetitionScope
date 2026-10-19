@@ -81,9 +81,9 @@ export default function WhatIsAiSeoPage() {
       </article>
       <CtaBand
         title="Want to see where you stand?"
-        body="Run the free AI visibility audit for your business."
+        body="Enter your details and reveal your AI visibility audit."
         ctaHref="/ai-seo/audit"
-        ctaLabel="Run the free audit"
+        ctaLabel="Start your audit"
         linkHref="/ai-seo/what-is-ai-seo"
         linkLabel="What is AI SEO?"
       />

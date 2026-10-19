@@ -37,6 +37,7 @@ export function AuditForm({
   submitLabel = "Run my audit",
   eyebrow = "Audit details",
   note,
+  initial,
   children,
 }: {
   providerCount: number;
@@ -49,20 +50,26 @@ export function AuditForm({
   eyebrow?: string;
   // Replaces the default "we will ask..." estimate under the form.
   note?: string;
+  // Values to start with, for example a draft saved before the visitor chose a plan.
+  initial?: Partial<AuditInput>;
   // Extra fields shown above the submit row (for example a report picker).
   children?: ReactNode;
 }) {
-  const [companyName, setCompanyName] = useState("");
-  const [website, setWebsite] = useState("");
-  const [services, setServices] = useState("");
-  const [competitors, setCompetitors] = useState<string[]>(Array(maxCompetitors).fill(""));
-  const [scope, setScope] = useState<Scope>("local");
-  const [countryCode, setCountryCode] = useState("US");
-  const [city, setCity] = useState("");
-  const [region, setRegion] = useState("");
+  const [companyName, setCompanyName] = useState(initial?.companyName ?? "");
+  const [website, setWebsite] = useState(initial?.website ?? "");
+  const [services, setServices] = useState(initial?.services ?? "");
+  const [competitors, setCompetitors] = useState<string[]>(
+    Array.from({ length: maxCompetitors }, (_, i) => initial?.competitors?.[i] ?? "")
+  );
+  const [scope, setScope] = useState<Scope>(initial?.scope ?? "local");
+  const [countryCode, setCountryCode] = useState(initial?.countryCode || "US");
+  const [city, setCity] = useState(initial?.city ?? "");
+  const [region, setRegion] = useState(initial?.region ?? "");
   // A handful of questions get their own boxes; larger limits use one line per question.
   const lineMode = maxQuestions > 5;
-  const [questions, setQuestions] = useState<string[]>(Array(lineMode ? 1 : maxQuestions).fill(""));
+  const [questions, setQuestions] = useState<string[]>(
+    Array.from({ length: lineMode ? 1 : maxQuestions }, (_, i) => (lineMode ? "" : initial?.questions?.[i] ?? ""))
+  );
   const [questionLines, setQuestionLines] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
