@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Loader2, Minus, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/Button";
@@ -62,6 +63,8 @@ function StepIcon({ step }: { step: Step }) {
 export function AuditTool() {
   const [config, setConfig] = useState<Config | null>(null);
   const [configError, setConfigError] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [startError, setStartError] = useState<string | null>(null);
   const [input, setInput] = useState<AuditInput | null>(null);
   const [started, setStarted] = useState(false);
 
@@ -81,6 +84,10 @@ export function AuditTool() {
       .then((r) => r.json())
       .then((c: Config) => setConfig(c))
       .catch(() => setConfigError(true));
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d: { user: unknown }) => setLoggedIn(!!d.user))
+      .catch(() => setLoggedIn(false));
   }, []);
 
   const clientDomain = input ? cleanDomain(input.website) : null;
@@ -90,6 +97,7 @@ export function AuditTool() {
   );
 
   function reset() {
+    setStartError(null);
     setInput(null);
     setStarted(false);
     setSiteStep("idle");
@@ -107,19 +115,21 @@ export function AuditTool() {
   async function start(values: AuditInput) {
     if (!config) return;
     reset();
+
+    // The server checks the plan and opens an audit session before anything runs.
+    const begun = await post<{ auditId: string; providers: { id: string; label: string }[] }>("/api/audit/start", values);
+    if (!begun.ok) {
+      setStartError(begun.error);
+      return;
+    }
+    const { auditId, providers } = begun.data;
     setInput(values);
     setStarted(true);
 
     // 1. Website checks and the speed test run alongside everything else.
     setSiteStep("running");
     setSpeedStep("running");
-    const sitePromise = post<{ result: SiteAuditResult }>("/api/audit/site", {
-      website: values.website,
-      services: values.services,
-      questions: values.questions,
-      scope: values.scope,
-      city: values.city,
-    }).then((r) => {
+    const sitePromise = post<{ result: SiteAuditResult }>("/api/audit/site", { auditId }).then((r) => {
       if (r.ok) {
         setSite(r.data.result);
         setSiteStep("done");
@@ -128,7 +138,7 @@ export function AuditTool() {
         setSiteStep("error");
       }
     });
-    const speedPromise = post<{ result: SpeedResult }>("/api/audit/speed", { website: values.website }).then((r) => {
+    const speedPromise = post<{ result: SpeedResult }>("/api/audit/speed", { auditId }).then((r) => {
       if (r.ok) {
         setSpeed(r.data.result);
         setSpeedStep("done");
@@ -138,9 +148,9 @@ export function AuditTool() {
     });
 
     // 2. Ask each AI platform each question a few times.
-    const tasks = config.providers.flatMap((p) =>
-      values.questions.flatMap((question) =>
-        Array.from({ length: RUNS_PER_QUESTION }, (_, i) => ({ provider: p, question, run: i + 1 }))
+    const tasks = providers.flatMap((p) =>
+      values.questions.flatMap((question, questionIndex) =>
+        Array.from({ length: RUNS_PER_QUESTION }, (_, i) => ({ provider: p, question, questionIndex, run: i + 1 }))
       )
     );
     setTotalRuns(tasks.length);
@@ -148,15 +158,10 @@ export function AuditTool() {
     const collected: VisibilityRun[] = [];
     await runPool(tasks, CONCURRENCY, async (t) => {
       const r = await post<{ run: VisibilityRun }>("/api/audit/visibility", {
+        auditId,
         provider: t.provider.id,
-        question: t.question,
+        questionIndex: t.questionIndex,
         run: t.run,
-        companyName: values.companyName,
-        competitors: values.competitors,
-        scope: values.scope,
-        city: values.city,
-        region: values.region,
-        countryCode: values.countryCode,
       });
       const run: VisibilityRun = r.ok
         ? r.data.run
@@ -180,14 +185,10 @@ export function AuditTool() {
     if (config.backlinks) {
       const final = analyze(collected, { companyName: values.companyName, clientDomain: cleanDomain(values.website) });
       const domains = Array.from(
-        new Set(
-          [cleanDomain(values.website), ...final.topBrands.filter((b) => !b.isClient).slice(0, 5).map((b) => b.domain)].filter(
-            (d): d is string => !!d
-          )
-        )
-      ).slice(0, 6);
+        new Set(final.topBrands.filter((b) => !b.isClient).slice(0, 5).map((b) => b.domain).filter((d): d is string => !!d))
+      );
       setBackStep("running");
-      const b = await post<{ results: BacklinkRow[] }>("/api/audit/backlinks", { domains });
+      const b = await post<{ results: BacklinkRow[] }>("/api/audit/backlinks", { auditId, domains });
       if (b.ok) {
         setBacklinks(b.data.results);
         setBackStep("done");
@@ -225,6 +226,26 @@ export function AuditTool() {
     );
   }
 
+  if (loggedIn === false) {
+    return (
+      <Panel eyebrow="Free account" meta="Takes 30 seconds">
+        <div className="space-y-4 p-6">
+          <p className="font-display text-lg font-semibold text-navy-800">Create a free account to run your audit</p>
+          <p className="text-sm leading-relaxed text-navy-500">
+            Your free plan includes one AI visibility audit and a website check. An account keeps your results and lets
+            you upgrade later to track changes over time.
+          </p>
+          <Link
+            href={`/auth?next=${encodeURIComponent("/ai-visibility")}`}
+            className="inline-flex items-center justify-center rounded-sm border border-brass-300 bg-brass-400 px-6 py-3 text-[13px] font-medium uppercase tracking-[0.05em] text-navy-950 shadow-[0_4px_0_0_rgba(90,66,32,0.9)] transition hover:bg-brass-300"
+          >
+            Create account or log in
+          </Link>
+        </div>
+      </Panel>
+    );
+  }
+
   const running = started && (siteStep === "running" || speedStep === "running" || visStep === "running" || backStep === "running");
   const finished = started && !running;
   const checks = site ? [...site.checks, ...(speed ? [speedCheckRow(speed)] : [])] : [];
@@ -239,6 +260,14 @@ export function AuditTool() {
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-navy-400">
             AI platforms checked: {config.providers.map((p) => p.label).join(", ")}
           </p>
+          {startError && (
+            <div className="border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">
+              {startError}{" "}
+              <Link href="/pricing" className="font-medium underline underline-offset-2">
+                See plans
+              </Link>
+            </div>
+          )}
           <AuditForm
             providerCount={config.providers.length}
             runsPerQuestion={RUNS_PER_QUESTION}

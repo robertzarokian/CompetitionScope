@@ -32,24 +32,42 @@ export function AuditForm({
   runsPerQuestion,
   disabled,
   onSubmit,
+  maxQuestions = 3,
+  maxCompetitors = 5,
+  submitLabel = "Run my audit",
+  eyebrow = "Audit details",
+  note,
+  children,
 }: {
   providerCount: number;
   runsPerQuestion: number;
   disabled: boolean;
   onSubmit: (input: AuditInput) => void;
+  maxQuestions?: number;
+  maxCompetitors?: number;
+  submitLabel?: string;
+  eyebrow?: string;
+  // Replaces the default "we will ask..." estimate under the form.
+  note?: string;
+  // Extra fields shown above the submit row (for example a report picker).
+  children?: ReactNode;
 }) {
   const [companyName, setCompanyName] = useState("");
   const [website, setWebsite] = useState("");
   const [services, setServices] = useState("");
-  const [competitors, setCompetitors] = useState(["", "", "", "", ""]);
+  const [competitors, setCompetitors] = useState<string[]>(Array(maxCompetitors).fill(""));
   const [scope, setScope] = useState<Scope>("local");
   const [countryCode, setCountryCode] = useState("US");
   const [city, setCity] = useState("");
   const [region, setRegion] = useState("");
-  const [questions, setQuestions] = useState(["", "", ""]);
+  // A handful of questions get their own boxes; larger limits use one line per question.
+  const lineMode = maxQuestions > 5;
+  const [questions, setQuestions] = useState<string[]>(Array(lineMode ? 1 : maxQuestions).fill(""));
+  const [questionLines, setQuestionLines] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const filledQuestions = questions.filter((q) => q.trim()).length;
+  const questionList = lineMode ? questionLines.split("\n") : questions;
+  const filledQuestions = questionList.filter((q) => q.trim()).length;
   const checks = providerCount * Math.max(filledQuestions, 1) * runsPerQuestion;
   const minutes = Math.max(1, Math.ceil((checks / 3) * 0.5));
 
@@ -64,8 +82,12 @@ export function AuditForm({
       city: scope === "local" ? city : "",
       region: scope === "local" ? region : "",
       countryCode: scope === "worldwide" ? "" : countryCode,
-      questions: questions.map((q) => q.trim()).filter(Boolean),
+      questions: questionList.map((q) => q.trim()).filter(Boolean),
     };
+    if (candidate.questions.length > maxQuestions) {
+      setErrors({ questions: `Your plan allows up to ${maxQuestions} questions.` });
+      return;
+    }
     const parsed = auditInputSchema.safeParse(candidate);
     if (!parsed.success) {
       const next: Record<string, string> = {};
@@ -81,7 +103,7 @@ export function AuditForm({
   }
 
   return (
-    <Panel eyebrow="Audit details" meta="Step 1 of 1">
+    <Panel eyebrow={eyebrow} meta="Step 1 of 1">
       <form onSubmit={submit} className="space-y-6 p-6">
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Company name" error={errors.companyName}>
@@ -96,7 +118,7 @@ export function AuditForm({
           <input className={inputClass} value={services} onChange={(e) => setServices(e.target.value)} placeholder="e.g. property management, rental management, condo management" maxLength={400} />
         </Field>
 
-        <Field label="Your competitors" hint="Up to 5 company names. Optional, but it lets us show how you compare.">
+        <Field label="Your competitors" hint={`Up to ${maxCompetitors} company names. Optional, but it lets us show how you compare.`}>
           <div className="grid gap-2 sm:grid-cols-2">
             {competitors.map((c, i) => (
               <input
@@ -158,31 +180,43 @@ export function AuditForm({
 
         <Field
           label="Questions you want AI to recommend you for"
-          hint="Write them the way a customer would ask. Up to 3."
+          hint={`Write them the way a customer would ask. Up to ${maxQuestions}${lineMode ? ", one per line" : ""}.`}
           error={errors.questions}
         >
-          <div className="space-y-2">
-            {questions.map((q, i) => (
-              <input
-                key={i}
-                className={inputClass}
-                value={q}
-                onChange={(e) => setQuestions((prev) => prev.map((p, j) => (j === i ? e.target.value : p)))}
-                placeholder={i === 0 ? "e.g. Top property management companies in Toronto" : "Optional"}
-                maxLength={200}
-                aria-label={`Question ${i + 1}`}
-              />
-            ))}
-          </div>
+          {lineMode ? (
+            <textarea
+              className={`${inputClass} min-h-[140px]`}
+              value={questionLines}
+              onChange={(e) => setQuestionLines(e.target.value)}
+              placeholder={"Top property management companies in Toronto\nBest condo managers in Toronto"}
+              aria-label="Questions, one per line"
+            />
+          ) : (
+            <div className="space-y-2">
+              {questions.map((q, i) => (
+                <input
+                  key={i}
+                  className={inputClass}
+                  value={q}
+                  onChange={(e) => setQuestions((prev) => prev.map((p, j) => (j === i ? e.target.value : p)))}
+                  placeholder={i === 0 ? "e.g. Top property management companies in Toronto" : "Optional"}
+                  maxLength={200}
+                  aria-label={`Question ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </Field>
+
+        {children}
 
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-navy-600 pt-5">
           <p className="max-w-md text-xs leading-relaxed text-navy-400">
-            We will ask {providerCount} AI platform{providerCount === 1 ? "" : "s"} your question{filledQuestions > 1 ? "s" : ""} {runsPerQuestion} times each
-            ({checks} checks), plus check your website. It takes about {minutes} minute{minutes === 1 ? "" : "s"}. Keep this tab open.
+            {note ??
+              `We will ask ${providerCount} AI platform${providerCount === 1 ? "" : "s"} your question${filledQuestions > 1 ? "s" : ""} ${runsPerQuestion} times each (${checks} checks), plus check your website. It takes about ${minutes} minute${minutes === 1 ? "" : "s"}. Keep this tab open.`}
           </p>
           <Button type="submit" size="lg" disabled={disabled}>
-            Run my audit
+            {submitLabel}
             <ArrowRight size={16} />
           </Button>
         </div>

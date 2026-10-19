@@ -11,7 +11,7 @@ import { FaqList } from "@/components/site/FaqList";
 import { CtaBand } from "@/components/site/CtaBand";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Reveal } from "@/components/site/Reveal";
-import { REPORT_PRICE_LABEL } from "@/lib/pricing";
+import { STARTING_PRICE_LABEL } from "@/lib/plans";
 import { FAQS, LINKEDIN_URL, SITE_URL, STEPS } from "@/lib/site";
 
 const AUDIENCES = [
@@ -44,7 +44,7 @@ const AUDIENCES = [
 const HERO_FACTS = [
   "10 short questions",
   "Researched on the live web",
-  `Free preview, then ${REPORT_PRICE_LABEL} one time`,
+  `Free preview, plans from ${STARTING_PRICE_LABEL}/month`,
 ];
 
 const HOME_FAQ_IDS = ["what", "time", "free", "accuracy"];

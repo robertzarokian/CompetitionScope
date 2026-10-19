@@ -2,6 +2,10 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, ShieldCheck, FileDown, Search } from "lucide-react";
 import { readDb } from "@/lib/db";
+import { getUserIdFromSession } from "@/lib/auth";
+import { getPlan } from "@/lib/account";
+import { maskCompetitor, maskFactor, maskRoadmapItem } from "@/lib/mask";
+import { STARTING_PRICE_LABEL } from "@/lib/plans";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
 import { CompetitorCard } from "@/components/report/CompetitorCard";
@@ -17,7 +21,9 @@ export default async function ReportPreviewPage({
   const report = db.reports.find((r) => r.id === id);
 
   if (!report) notFound();
-  if (report.unlocked) redirect(`/report/${id}/full`);
+  // Reports bought before subscriptions stay unlocked. Otherwise a paid plan unlocks every report.
+  const plan = await getPlan(await getUserIdFromSession());
+  if (report.unlocked || plan.limits.fullReports) redirect(`/report/${id}/full`);
 
   const [firstCompetitor, ...restCompetitors] = report.competitors;
   const [firstFactor, ...restFactors] = report.successFactors;
@@ -50,7 +56,7 @@ export default async function ReportPreviewPage({
             Here&rsquo;s what we found for {report.answers.companyName}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm text-navy-500 sm:text-base">
-            {`We researched ${report.competitors.length} of your closest competitors. Here's a preview. Unlock the full report to see all of it, ranked and broken down.`}
+            {`We researched ${report.competitors.length} of your closest competitors. Here's a preview. Choose a plan to see all of it, ranked and broken down.`}
           </p>
         </div>
 
@@ -89,7 +95,7 @@ export default async function ReportPreviewPage({
               >
                 <div className="space-y-4">
                   {restCompetitors.map((c) => (
-                    <CompetitorCard key={c.name} competitor={c} />
+                    <CompetitorCard key={c.ranking} competitor={maskCompetitor(c)} asText />
                   ))}
                 </div>
               </LockedSection>
@@ -110,8 +116,8 @@ export default async function ReportPreviewPage({
                 label={`${restFactors.length} more shared success factors`}
               >
                 <div className="space-y-3">
-                  {restFactors.map((f) => (
-                    <SuccessFactorCard key={f.title} factor={f} />
+                  {restFactors.map((f, i) => (
+                    <SuccessFactorCard key={i} factor={maskFactor(f)} />
                   ))}
                 </div>
               </LockedSection>
@@ -131,7 +137,7 @@ export default async function ReportPreviewPage({
             >
               <div className="space-y-3">
                 {report.roadmap.map((r) => (
-                  <RoadmapCard key={r.priority} item={r} />
+                  <RoadmapCard key={r.priority} item={maskRoadmapItem(r)} />
                 ))}
               </div>
             </LockedSection>
@@ -145,14 +151,14 @@ export default async function ReportPreviewPage({
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-cream-200">
             Every competitor, every success factor, and a step-by-step roadmap,
-            plus a branded PDF you can share with your team.
+            plus monthly tracking so you see what changes.
           </p>
           <div className="mx-auto mt-6 grid max-w-sm gap-2.5 text-left text-sm text-cream-200">
             {[
               `All ${report.competitors.length} competitor breakdowns, fully detailed`,
               `All ${report.successFactors.length} shared success factors`,
               `Your full ${report.roadmap.length}-step prioritized roadmap`,
-              "A branded PDF export to keep and share",
+              "Trend lines, history, and change alerts",
             ].map((item) => (
               <div key={item} className="flex items-center gap-2.5">
                 <ShieldCheck size={16} className="shrink-0 text-brass-400" />
@@ -160,14 +166,14 @@ export default async function ReportPreviewPage({
               </div>
             ))}
           </div>
-          <Link href={`/checkout/${id}`} className="mt-7 inline-block">
+          <Link href={`/pricing?report=${id}`} className="mt-7 inline-block">
             <Button size="lg">
               <FileDown size={16} />
-              Unlock My Full Report
+              See Plans
             </Button>
           </Link>
           <p className="mt-3 font-mono text-[11px] uppercase tracking-wide text-cream-300">
-            One-time payment. No subscription.
+            Plans from {STARTING_PRICE_LABEL}/month. Cancel anytime.
           </p>
         </section>
       </main>

@@ -1,37 +1,30 @@
 import { notFound, redirect } from "next/navigation";
-import { CheckCircle2, Download, PartyPopper } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle2, Download, LineChart } from "lucide-react";
 import { readDb } from "@/lib/db";
-import { confirmStripeSessionAndUnlock } from "@/lib/checkoutConfirm";
+import { getUserIdFromSession } from "@/lib/auth";
+import { getPlan } from "@/lib/account";
 import { Logo } from "@/components/Logo";
 import { CompetitorCard } from "@/components/report/CompetitorCard";
 import { SuccessFactorCard, RoadmapCard } from "@/components/report/ReportSections";
 import { LogoWatermark } from "@/components/decor/LogoWatermark";
 
-export default async function FullReportPage({
-  params,
-  searchParams,
-}: PageProps<"/report/[id]/full">) {
+export default async function FullReportPage({ params }: PageProps<"/report/[id]/full">) {
   const { id } = await params;
-  const sp = await searchParams;
-  const sessionId = typeof sp.session_id === "string" ? sp.session_id : undefined;
-  const justPurchased = sp.purchased === "1";
 
-  let db = await readDb();
-  let report = db.reports.find((r) => r.id === id);
+  const db = await readDb();
+  const report = db.reports.find((r) => r.id === id);
   if (!report) notFound();
 
-  if (!report.unlocked && sessionId) {
-    const confirmed = await confirmStripeSessionAndUnlock(id, sessionId);
-    if (confirmed) {
-      db = await readDb();
-      report = db.reports.find((r) => r.id === id);
-      if (!report) notFound();
-    }
+  // Reports bought before subscriptions stay unlocked, with their PDF.
+  // Otherwise the viewer needs a paid plan, and the PDF needs a plan that includes it.
+  const userId = await getUserIdFromSession();
+  const plan = await getPlan(userId);
+  const legacy = report.unlocked;
+  if (!legacy && !plan.limits.fullReports) {
+    redirect(`/pricing?report=${id}`);
   }
-
-  if (!report.unlocked) {
-    redirect(`/checkout/${id}`);
-  }
+  const canPdf = legacy || plan.limits.pdf;
 
   return (
     <div className="relative min-h-screen overflow-hidden pb-24">
@@ -39,24 +32,35 @@ export default async function FullReportPage({
 
       <header className="relative flex items-center justify-between px-6 py-6 sm:px-10">
         <Logo />
-        <a
-          href={`/api/report/${id}/pdf`}
-          className="inline-flex items-center gap-2 border border-navy-600 bg-navy-800 px-4 py-2 font-mono text-xs uppercase tracking-wide text-cream-100 transition hover:border-brass-400/60 hover:text-brass-300"
-        >
-          <Download size={14} />
-          Download PDF
-        </a>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/dashboard?report=${id}`}
+            className="inline-flex items-center gap-2 border border-navy-600 bg-cream-50 px-4 py-2 font-mono text-xs uppercase tracking-wide text-navy-700 transition hover:border-brass-500"
+          >
+            <LineChart size={14} />
+            Track changes
+          </Link>
+          {canPdf ? (
+            <a
+              href={`/api/report/${id}/pdf`}
+              className="inline-flex items-center gap-2 border border-navy-600 bg-navy-800 px-4 py-2 font-mono text-xs uppercase tracking-wide text-cream-100 transition hover:border-brass-400/60 hover:text-brass-300"
+            >
+              <Download size={14} />
+              Download PDF
+            </a>
+          ) : (
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-2 border border-navy-600 bg-cream-50 px-4 py-2 font-mono text-xs uppercase tracking-wide text-navy-500 transition hover:border-brass-500"
+            >
+              <Download size={14} />
+              PDF on Growth
+            </Link>
+          )}
+        </div>
       </header>
 
       <main className="relative mx-auto max-w-3xl px-6">
-        {justPurchased && (
-          <div className="mb-8 flex items-center justify-center gap-2 border border-brass-400/40 bg-brass-400/10 px-4 py-3 text-center text-sm text-brass-700">
-            <PartyPopper size={16} />
-            You&rsquo;re unlocked. The full report is below, and your branded PDF
-            is ready to download any time.
-          </div>
-        )}
-
         <div className="text-center">
           <span className="inline-flex items-center gap-2 border border-brass-500/40 bg-navy-800 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-brass-300">
             <CheckCircle2 size={13} />

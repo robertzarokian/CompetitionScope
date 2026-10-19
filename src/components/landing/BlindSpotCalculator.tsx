@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ButtonLink";
 import { SectionHeading } from "@/components/site/SectionHeading";
-import { REPORT_PRICE_CENTS } from "@/lib/pricing";
+import { PLANS } from "@/lib/plans";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -17,7 +17,7 @@ export function BlindSpotCalculator() {
   const [dealValue, setDealValue] = useState(5000);
 
   const yearly = lostPerMonth * 12 * dealValue;
-  const reportsPerDeal = Math.floor(dealValue / (REPORT_PRICE_CENTS / 100));
+  const monthsPerDeal = Math.floor(dealValue / (PLANS.starter.monthlyCents / 100));
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
@@ -85,7 +85,7 @@ export function BlindSpotCalculator() {
         </p>
         <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-cream-200">
           At these numbers, winning back a single deal is worth about{" "}
-          <span className="font-semibold text-brass-300">{reportsPerDeal}</span> reports.
+          <span className="font-semibold text-brass-300">{monthsPerDeal}</span> months of Starter.
         </p>
         <div className="mt-6">
           <ButtonLink href="/onboarding/1" size="lg">

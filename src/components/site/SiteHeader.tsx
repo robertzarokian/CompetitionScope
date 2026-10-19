@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ButtonLink";
@@ -11,6 +11,14 @@ import { NAV_LINKS } from "@/lib/site";
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d: { user: unknown }) => setSignedIn(!!d.user))
+      .catch(() => undefined);
+  }, [pathname]);
 
   return (
     <header className="relative z-20 mx-auto w-full max-w-6xl px-6 py-5 sm:px-10">
@@ -30,6 +38,12 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href={signedIn ? "/dashboard" : "/auth?next=/dashboard"}
+            className="font-mono text-[11px] uppercase tracking-[0.14em] text-navy-500 transition-colors hover:text-brass-600"
+          >
+            {signedIn ? "Dashboard" : "Log in"}
+          </Link>
           <ButtonLink href="/onboarding/1" size="sm">
             Begin your scope
           </ButtonLink>
@@ -64,6 +78,13 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href={signedIn ? "/dashboard" : "/auth?next=/dashboard"}
+            onClick={() => setOpen(false)}
+            className="py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-navy-700"
+          >
+            {signedIn ? "Dashboard" : "Log in"}
+          </Link>
           <ButtonLink
             href="/onboarding/1"
             size="md"

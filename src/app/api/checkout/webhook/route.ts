@@ -1,26 +1,22 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { updateDb } from "@/lib/db";
-import { REPORT_PRICE_CENTS } from "@/lib/pricing";
+import { applyStripeSubscription, stripeClient } from "@/lib/billing";
+import { syncFromCheckoutSession } from "@/lib/billing";
 
 // Stripe requires the raw, unparsed request body to verify webhook signatures.
+// Subscription state is also re-checked with Stripe when customers return to
+// the site, so a missed webhook delays an update but never loses a payment.
 export async function POST(request: Request) {
-  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const stripe = stripeClient();
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!secretKey || !webhookSecret) {
-    return NextResponse.json(
-      { error: "Stripe is not configured on this server." },
-      { status: 400 }
-    );
+  if (!stripe || !webhookSecret) {
+    return NextResponse.json({ error: "Stripe is not configured on this server." }, { status: 400 });
   }
 
   const signature = request.headers.get("stripe-signature");
   const rawBody = await request.text();
-  if (!signature) {
-    return NextResponse.json({ error: "Missing Stripe signature." }, { status: 400 });
-  }
+  if (!signature) return NextResponse.json({ error: "Missing Stripe signature." }, { status: 400 });
 
-  const stripe = new Stripe(secretKey);
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
@@ -29,25 +25,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature." }, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const reportId = session.metadata?.reportId;
-    const userId = session.metadata?.userId;
-    if (reportId) {
-      await updateDb((db) => {
-        const report = db.reports.find((r) => r.id === reportId);
-        if (!report) return;
-        report.unlocked = true;
-        report.ownerUserId = report.ownerUserId ?? userId ?? null;
-        db.purchases.push({
-          reportId,
-          userId: userId ?? "unknown",
-          amountCents: session.amount_total ?? REPORT_PRICE_CENTS,
-          createdAt: new Date().toISOString(),
-          mode: "stripe",
-        });
-      });
+  try {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      if (session.mode === "subscription" && session.metadata?.userId) {
+        await syncFromCheckoutSession(session.id, session.metadata.userId);
+      }
+    } else if (
+      event.type === "customer.subscription.created" ||
+      event.type === "customer.subscription.updated" ||
+      event.type === "customer.subscription.deleted"
+    ) {
+      await applyStripeSubscription(event.data.object as Stripe.Subscription);
     }
+  } catch (err) {
+    console.error("[CompetitionScope] Stripe webhook handling failed:", err);
+    // A 500 makes Stripe retry the event later.
+    return NextResponse.json({ error: "Could not process the event." }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

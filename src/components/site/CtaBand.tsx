@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ButtonLink";
 import { CornerFrame } from "@/components/decor/CornerFrame";
-import { REPORT_PRICE_LABEL } from "@/lib/pricing";
+import { STARTING_PRICE_LABEL } from "@/lib/plans";
 
 export function CtaBand({
   title = "Find out who you are really up against.",
@@ -36,7 +36,7 @@ export function CtaBand({
             </Link>
           </div>
           <p className="mt-5 font-mono text-[11px] uppercase tracking-wide text-cream-300">
-            Free preview. {REPORT_PRICE_LABEL} one time to unlock. No subscription.
+            Free preview. Plans from {STARTING_PRICE_LABEL}/month. Cancel anytime.
           </p>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Lock } from "lucide-react";
 export function LockedSection({
   reportId,
   children,
-  label = "Unlock to see this",
+  label = "Subscribe to see this",
 }: {
   reportId: string;
   children: React.ReactNode;
@@ -19,10 +19,10 @@ export function LockedSection({
         </div>
         <p className="text-sm font-medium text-cream-50">{label}</p>
         <Link
-          href={`/checkout/${reportId}`}
+          href={`/pricing?report=${reportId}`}
           className="inline-flex items-center gap-2 rounded-sm border border-brass-300 bg-brass-400 px-5 py-2.5 font-medium uppercase tracking-[0.04em] text-navy-950 text-xs shadow-[0_4px_0_0_rgba(90,66,32,0.9)] transition hover:bg-brass-300"
         >
-          Unlock Full Report
+          See plans to unlock
         </Link>
       </div>
     </div>

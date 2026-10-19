@@ -31,32 +31,26 @@ export const auditInputSchema = z
 
 export type AuditInput = z.infer<typeof auditInputSchema>;
 
-// Request bodies for the individual audit API routes.
-export const siteRequestSchema = z.object({
-  website: text(300).min(3),
-  services: text(400),
-  questions: z.array(text(200)).max(3),
-  scope: z.enum(SCOPES),
-  city: text(80),
-});
+// Request bodies for the individual audit API routes. Each names an audit
+// session (created by /api/audit/start after the plan check) instead of
+// carrying its own website or questions.
+const auditId = z.string().trim().min(10).max(64);
+
+export const siteRequestSchema = z.object({ auditId });
+export const speedRequestSchema = z.object({ auditId });
 
 export const visibilityRequestSchema = z.object({
+  auditId,
   provider: z.string().trim().max(20),
-  question: text(200).min(5),
+  questionIndex: z.number().int().min(0).max(9),
   run: z.number().int().min(1).max(5),
-  companyName: text(120).min(1),
-  competitors: z.array(text(100)).max(5),
-  scope: z.enum(SCOPES),
-  city: text(80),
-  region: text(80),
-  countryCode: z.string().trim().max(2),
 });
 
 export const backlinksRequestSchema = z.object({
-  domains: z.array(text(120).min(3)).min(1).max(8),
+  auditId,
+  // Competitor domains found during the audit. The customer's own domain is added server-side.
+  domains: z.array(text(120).min(3)).max(5),
 });
-
-export const speedRequestSchema = z.object({ website: text(300).min(3) });
 
 export type CheckStatus = "good" | "warn" | "bad" | "info";
 
