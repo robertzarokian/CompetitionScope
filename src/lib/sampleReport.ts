@@ -1,7 +1,7 @@
 import type { CompetitorProfile, RoadmapItem, SuccessFactor } from "./types";
 
 // Fictional company and fictional competitors for the public /sample-report
-// page. Websites use the reserved ".example" TLD so they can never be real.
+// page. The websites are made up, and the page labels them as fictional.
 export const SAMPLE_COMPANY = "Tallyfox";
 
 export const SAMPLE_SUMMARY =
@@ -13,7 +13,7 @@ export const SAMPLE_TEASER =
 export const SAMPLE_COMPETITORS: CompetitorProfile[] = [
   {
     name: "Ledgerlark",
-    website: "https://ledgerlark.example",
+    website: "https://ledgerlark.com",
     matchScore: 94,
     ranking: 1,
     summary:
@@ -39,7 +39,7 @@ export const SAMPLE_COMPETITORS: CompetitorProfile[] = [
   },
   {
     name: "Billbright",
-    website: "https://billbright.example",
+    website: "https://billbright.com",
     matchScore: 88,
     ranking: 2,
     summary:
@@ -64,7 +64,7 @@ export const SAMPLE_COMPETITORS: CompetitorProfile[] = [
   },
   {
     name: "Fernbook",
-    website: "https://fernbook.example",
+    website: "https://fernbook.com",
     matchScore: 79,
     ranking: 3,
     summary:

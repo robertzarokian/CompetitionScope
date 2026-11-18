@@ -15,7 +15,7 @@ export function SampleSite() {
   return (
     <div className="space-y-6">
       <SiteChecksPanel checks={SAMPLE_CHECKS} note="Checks 6 to 8 (backlinks and advertising) are shown in their own sections." />
-      <BacklinksPanel rows={SAMPLE_BACKLINKS} clientDomain="tallyfox.example" />
+      <BacklinksPanel rows={SAMPLE_BACKLINKS} clientDomain="tallyfox.com" />
     </div>
   );
 }

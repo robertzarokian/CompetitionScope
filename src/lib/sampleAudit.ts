@@ -4,7 +4,7 @@ import type { BacklinkRow, CheckRow } from "./audit/schema";
 // Fictional AI visibility audit, website checks, and backlink data for the
 // public /sample-report page. It follows the same shapes the live audit
 // produces, so the sample renders with the real report components. Every
-// company and website uses the reserved ".example" domain.
+// company, website, and figure is made up.
 
 const src = (domain: string, title: string, type: BrandSource["type"], count: number): BrandSource => ({
   url: `https://${domain}/`,
@@ -31,12 +31,12 @@ const ledgerlark = brand({
   avgPosition: 1.9,
   bestPosition: 1,
   inTop5: 7,
-  domain: "ledgerlark.example",
+  domain: "ledgerlark.com",
   sources: [
-    src("freelancetools.example", "The 12 best invoicing tools for freelancers", "Articles and blogs", 5),
-    src("softwarereviews.example", "Ledgerlark reviews and ratings", "Reviews and ratings", 4),
-    src("ledgerlark.example", "Ledgerlark vs Billbright vs Tallyfox", "Company website", 3),
-    src("taxtimes.example", "What freelancers should look for in tax-ready software", "News and press", 2),
+    src("freelancetools.com", "The 12 best invoicing tools for freelancers", "Articles and blogs", 5),
+    src("softwarereviews.com", "Ledgerlark reviews and ratings", "Reviews and ratings", 4),
+    src("ledgerlark.com", "Ledgerlark vs Billbright vs Tallyfox", "Company website", 3),
+    src("taxtimes.com", "What freelancers should look for in tax-ready software", "News and press", 2),
   ],
 });
 
@@ -48,12 +48,12 @@ const billbright = brand({
   avgPosition: 1.5,
   bestPosition: 1,
   inTop5: 7,
-  domain: "billbright.example",
+  domain: "billbright.com",
   sources: [
-    src("softwarereviews.example", "Billbright reviews and ratings", "Reviews and ratings", 4),
-    src("getpaidfaster.example", "How to get paid faster as a freelancer", "Articles and blogs", 3),
-    src("forumcorner.example", "Best way to chase late invoices? (community thread)", "Social and forums", 3),
-    src("billbright.example", "Pricing and free plan", "Company website", 2),
+    src("softwarereviews.com", "Billbright reviews and ratings", "Reviews and ratings", 4),
+    src("getpaidfaster.com", "How to get paid faster as a freelancer", "Articles and blogs", 3),
+    src("forumcorner.com", "Best way to chase late invoices? (community thread)", "Social and forums", 3),
+    src("billbright.com", "Pricing and free plan", "Company website", 2),
   ],
 });
 
@@ -65,12 +65,12 @@ const fernbook = brand({
   avgPosition: 3.7,
   bestPosition: 2,
   inTop5: 3,
-  domain: "fernbook.example",
+  domain: "fernbook.com",
   providers: ["ChatGPT"],
   sources: [
-    src("creatornews.example", "Tools every creative freelancer uses", "Articles and blogs", 2),
-    src("softwarereviews.example", "Fernbook reviews and ratings", "Reviews and ratings", 1),
-    src("fernbook.example", "Templates and contracts for creatives", "Company website", 1),
+    src("creatornews.com", "Tools every creative freelancer uses", "Articles and blogs", 2),
+    src("softwarereviews.com", "Fernbook reviews and ratings", "Reviews and ratings", 1),
+    src("fernbook.com", "Templates and contracts for creatives", "Company website", 1),
   ],
 });
 
@@ -82,7 +82,7 @@ const tallyfox = brand({
   avgPosition: 4,
   bestPosition: 4,
   inTop5: 1,
-  domain: "tallyfox.example",
+  domain: "tallyfox.com",
   providers: ["ChatGPT"],
 });
 
@@ -117,15 +117,15 @@ export const SAMPLE_ANALYSIS: Analysis = {
     { type: "Directories and listings", count: 2, share: 0.04 },
   ],
   topDomains: [
-    { domain: "softwarereviews.example", type: "Reviews and ratings", count: 9, brands: ["Ledgerlark", "Billbright", "Fernbook"] },
-    { domain: "freelancetools.example", type: "Articles and blogs", count: 5, brands: ["Ledgerlark", "Fernbook"] },
-    { domain: "getpaidfaster.example", type: "Articles and blogs", count: 3, brands: ["Billbright"] },
-    { domain: "forumcorner.example", type: "Social and forums", count: 3, brands: ["Billbright", "Ledgerlark"] },
-    { domain: "creatornews.example", type: "Articles and blogs", count: 2, brands: ["Fernbook"] },
+    { domain: "softwarereviews.com", type: "Reviews and ratings", count: 9, brands: ["Ledgerlark", "Billbright", "Fernbook"] },
+    { domain: "freelancetools.com", type: "Articles and blogs", count: 5, brands: ["Ledgerlark", "Fernbook"] },
+    { domain: "getpaidfaster.com", type: "Articles and blogs", count: 3, brands: ["Billbright"] },
+    { domain: "forumcorner.com", type: "Social and forums", count: 3, brands: ["Billbright", "Ledgerlark"] },
+    { domain: "creatornews.com", type: "Articles and blogs", count: 2, brands: ["Fernbook"] },
   ],
   advice: [
     "Tallyfox was recommended in 1 of 8 AI answers, at an average position of 4.0. The companies that were recommended are backed mostly by third-party articles, followed by review sites.",
-    "Get listed or featured on the websites AI leans on most for these questions: softwarereviews.example, freelancetools.example, getpaidfaster.example, forumcorner.example, creatornews.example.",
+    "Get listed or featured on the websites AI leans on most for these questions: softwarereviews.com, freelancetools.com, getpaidfaster.com, forumcorner.com, creatornews.com.",
     "Third-party \"best of\" articles and roundups drive many recommendations. Aim to be included in the ones that rank well.",
     "Collect more customer reviews on the review sites that appear here, and respond to them.",
     "Take part in the communities where these brands are discussed, such as forums and freelancer groups.",
@@ -139,7 +139,7 @@ export const SAMPLE_CHECKS: CheckRow[] = [
     title: "Number of pages",
     status: "info",
     summary: "About 84 pages, counted from the website's sitemap.",
-    details: ["Sitemap found at https://tallyfox.example/sitemap.xml", "Rivals in this category typically have 150 to 600 pages."],
+    details: ["Sitemap found at https://tallyfox.com/sitemap.xml", "Rivals in this category typically have 150 to 600 pages."],
   },
   {
     n: 2,
@@ -165,7 +165,7 @@ export const SAMPLE_CHECKS: CheckRow[] = [
     title: "Blog",
     status: "warn",
     summary: "A blog exists with about 9 posts (counted from the sitemap).",
-    details: ["Found at https://tallyfox.example/blog", "Most posts are product announcements. None target comparison or \"how to get paid\" searches."],
+    details: ["Found at https://tallyfox.com/blog", "Most posts are product announcements. None target comparison or \"how to get paid\" searches."],
   },
   {
     n: 5,
@@ -180,9 +180,9 @@ export const SAMPLE_CHECKS: CheckRow[] = [
     status: "warn",
     summary: "Checked 8 pages (the main page and pages linked from the menu). 3 of 8 have your service keywords in the title tag.",
     details: [
-      "https://tallyfox.example/  Title: \"Tallyfox\"  (no keywords)",
-      "https://tallyfox.example/features  Title: \"Features | Tallyfox\"  (no keywords)",
-      "https://tallyfox.example/pricing  Title: \"Invoicing software pricing | Tallyfox\"  (keywords found)",
+      "https://tallyfox.com/  Title: \"Tallyfox\"  (no keywords)",
+      "https://tallyfox.com/features  Title: \"Features | Tallyfox\"  (no keywords)",
+      "https://tallyfox.com/pricing  Title: \"Invoicing software pricing | Tallyfox\"  (keywords found)",
       "2 pages are missing a meta description.",
     ],
   },
@@ -198,7 +198,7 @@ export const SAMPLE_CHECKS: CheckRow[] = [
     title: "FAQ sections and FAQ schema",
     status: "warn",
     summary: "FAQ sections were found on 2 pages, but none use FAQ schema code.",
-    details: ["https://tallyfox.example/pricing", "https://tallyfox.example/features"],
+    details: ["https://tallyfox.com/pricing", "https://tallyfox.com/features"],
   },
   {
     n: 12,
@@ -210,10 +210,10 @@ export const SAMPLE_CHECKS: CheckRow[] = [
 ];
 
 export const SAMPLE_BACKLINKS: BacklinkRow[] = [
-  { domain: "tallyfox.example", ok: true, error: null, rank: 31, backlinks: 4820, referringDomains: 390, referringMainDomains: 312, spamScore: 2 },
-  { domain: "ledgerlark.example", ok: true, error: null, rank: 71, backlinks: 186400, referringDomains: 8200, referringMainDomains: 6950, spamScore: 1 },
-  { domain: "billbright.example", ok: true, error: null, rank: 58, backlinks: 52300, referringDomains: 2600, referringMainDomains: 2180, spamScore: 1 },
-  { domain: "fernbook.example", ok: true, error: null, rank: 44, backlinks: 11900, referringDomains: 780, referringMainDomains: 640, spamScore: 3 },
+  { domain: "tallyfox.com", ok: true, error: null, rank: 31, backlinks: 4820, referringDomains: 390, referringMainDomains: 312, spamScore: 2 },
+  { domain: "ledgerlark.com", ok: true, error: null, rank: 71, backlinks: 186400, referringDomains: 8200, referringMainDomains: 6950, spamScore: 1 },
+  { domain: "billbright.com", ok: true, error: null, rank: 58, backlinks: 52300, referringDomains: 2600, referringMainDomains: 2180, spamScore: 1 },
+  { domain: "fernbook.com", ok: true, error: null, rank: 44, backlinks: 11900, referringDomains: 780, referringMainDomains: 640, spamScore: 3 },
 ];
 
 // Side-by-side comparison, built from the competitor research and the audit.
