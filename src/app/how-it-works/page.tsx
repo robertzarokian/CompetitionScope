@@ -53,10 +53,10 @@ const LOOK_AT = [
 ];
 
 const GOOD_TO_KNOW = [
-  "Research is done by AI using live web search, so treat the findings as a strong starting point and verify details that matter.",
-  "Revenue and scale figures are estimates and are labeled that way. We do not present non-public financials as facts.",
-  "If we cannot find enough direct competitors, we use the closest real analogues instead of inventing companies.",
-  "Most reports finish in about a minute and some take up to 2 minutes. Keep the tab open while we work.",
+  "The research is done by AI with live web search. Treat the findings as a strong starting point and check the details that matter.",
+  "Revenue and size figures are estimates, and they are labeled that way. We never present private financials as fact.",
+  "If we cannot find enough direct competitors, we use the closest real ones instead of making companies up.",
+  "Most reports take about a minute, and a few take up to 2. Keep the tab open while we work.",
 ];
 
 export default function HowItWorksPage() {
@@ -65,7 +65,7 @@ export default function HowItWorksPage() {
       <PageHero
         eyebrow="How it works"
         title="From a few answers to a full competitive picture"
-        intro="You describe your business. We research the live web for the rivals you are most likely losing to, then turn what we find into a ranked report and a plan."
+        intro="You describe your business. We search the web for the rivals you are most likely losing to, then put what we find into a ranked report and a plan."
       />
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-14 sm:px-10">

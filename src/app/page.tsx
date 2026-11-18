@@ -1,53 +1,44 @@
 import Link from "next/link";
-import { ArrowRight, Briefcase, Check, Megaphone, Target, Users } from "lucide-react";
+import { ArrowRight, Check, ClipboardList, FileText, Search } from "lucide-react";
 import { ButtonLink } from "@/components/ButtonLink";
-import { TelescopeSchematic } from "@/components/landing/TelescopeSchematic";
-import { ScopePreview } from "@/components/landing/ScopePreview";
+import { HeroScope } from "@/components/landing/HeroScope";
+import { ServicePicker } from "@/components/landing/ServicePicker";
 import { ReportExplorer } from "@/components/landing/ReportExplorer";
-import { BlindSpotCalculator } from "@/components/landing/BlindSpotCalculator";
+import { PromoPopup } from "@/components/landing/PromoPopup";
 import { PageShell } from "@/components/site/PageShell";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { FaqList } from "@/components/site/FaqList";
 import { CtaBand } from "@/components/site/CtaBand";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Reveal } from "@/components/site/Reveal";
-import { ServicePicker } from "@/components/landing/ServicePicker";
-import { PromoPopup } from "@/components/landing/PromoPopup";
-import { STARTING_PRICE_LABEL } from "@/lib/plans";
-import { FAQS, LINKEDIN_URL, SITE_URL, STEPS } from "@/lib/site";
+import { PAID_PLANS, PLANS, STARTING_PRICE_LABEL, formatPrice } from "@/lib/plans";
+import { FAQS, LINKEDIN_URL, SITE_URL } from "@/lib/site";
 
-const AUDIENCES = [
+const HERO_FACTS = ["10 quick questions", "About a minute", "Free preview, no card"];
+
+const THREE_STEPS = [
   {
-    title: "Founders and owners",
-    description:
-      "Know who you are really up against before you set pricing, positioning, or your next hire.",
-    Icon: Briefcase,
+    Icon: ClipboardList,
+    title: "Tell us about your business",
+    body: "Answer 10 quick questions: what you sell, who you sell to, and what has been hard lately.",
   },
   {
-    title: "Marketing leads",
-    description:
-      "See which channels your rivals lean on and where they are winning attention you are not.",
-    Icon: Megaphone,
+    Icon: Search,
+    title: "We search the web for rivals",
+    body: "We find the companies you are most likely losing customers to and study how each one wins.",
   },
   {
-    title: "Sales teams",
-    description:
-      "Understand why deals go to a competitor and what to say when they show up late in the cycle.",
-    Icon: Target,
-  },
-  {
-    title: "Agencies and consultants",
-    description:
-      "Brief a new client on their competitive landscape with a ranked, specific starting point.",
-    Icon: Users,
+    Icon: FileText,
+    title: "You get a clear report",
+    body: "See who they are, how they sell, where they advertise, and a step-by-step plan to beat them.",
   },
 ];
 
-const HERO_FACTS = [
-  "10 short questions",
-  "Researched on the live web",
-  `Free preview, plans from ${STARTING_PRICE_LABEL}/month`,
-];
+const PLAN_BLURBS: Record<string, string> = {
+  starter: "Keep an eye on one company, with monthly re-checks.",
+  growth: "Weekly re-checks, website tracking, and PDF reports.",
+  agency: "Run it for up to 10 clients, with your own branding.",
+};
 
 const HOME_FAQ_IDS = ["what", "time", "free", "accuracy"];
 
@@ -78,43 +69,22 @@ export default function Home() {
 
       <PromoPopup />
 
-      <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-14 pt-4 sm:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+      <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-14 pt-4 sm:px-10 lg:grid-cols-[1fr_1.05fr] lg:gap-12">
         <div>
           <span className="inline-flex items-center gap-2 border border-brass-500/40 bg-navy-800 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-brass-300">
             <span className="h-1.5 w-1.5 scope-pulse rounded-full bg-brass-400" />
-            Competitor research in minutes
+            Competitor research for business owners
           </span>
-          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] text-navy-800 sm:text-5xl lg:text-[3.15rem]">
-            See your competition{" "}
-            <span className="relative inline-block">
-              <span className="brass-underline">clearly</span>
-              <svg
-                className="absolute -bottom-1 left-0 w-full"
-                height="8"
-                viewBox="0 0 200 8"
-                preserveAspectRatio="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M1 5.5C40 2 90 1 130 4C155 6 175 5 199 2.5"
-                  stroke="#cc9f52"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            .
+          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] text-navy-800 sm:text-5xl lg:text-[3.1rem]">
+            Find out who you are <span className="brass-underline">really</span> up against.
           </h1>
           <p className="mt-5 max-w-lg text-base leading-relaxed text-navy-500 sm:text-[17px]">
-            Point CompetitionScope at your closest rivals and we do the deep,
-            unglamorous work of finding them. You get their strategy, their
-            edge, and where they advertise, plus a specific plan to beat them.
-            Answer a few questions to start.
+            CompetitionScope finds your competitors for you. Tell us about your business and we show you who is winning
+            your customers, how they do it, and what to do about it.
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <ButtonLink href="/onboarding/1" size="lg">
-              Begin your scope
+              Start free
               <ArrowRight size={16} />
             </ButtonLink>
             <ButtonLink href="/sample-report" variant="secondary" size="lg">
@@ -133,21 +103,42 @@ export default function Home() {
             ))}
           </ul>
         </div>
-        <TelescopeSchematic />
+        <HeroScope />
+      </section>
+
+      <section id="how" className="relative border-t border-navy-300/60 py-14">
+        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
+          <Reveal>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <SectionHeading label="How it works" title="Three steps, about a minute" />
+              <Link
+                href="/how-it-works"
+                className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-brass-600 underline-offset-4 hover:underline"
+              >
+                More detail
+                <ArrowRight size={13} />
+              </Link>
+            </div>
+          </Reveal>
+          <ol className="mt-8 grid gap-4 md:grid-cols-3">
+            {THREE_STEPS.map((step, i) => (
+              <Reveal key={step.title} delay={i * 0.07}>
+                <li className="paper-panel group relative h-full border border-navy-600 p-6 transition-shadow hover:shadow-[0_6px_0_0_rgba(171,127,60,0.35)]">
+                  <span className="absolute right-4 top-3 font-display text-5xl font-bold text-navy-100">{i + 1}</span>
+                  <step.Icon size={22} className="relative text-brass-500" strokeWidth={1.75} />
+                  <h3 className="relative mt-4 font-display text-lg font-semibold text-navy-800">{step.title}</h3>
+                  <p className="relative mt-2 text-[14px] leading-relaxed text-navy-500">{step.body}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
       </section>
 
       <section id="services" className="relative border-t border-navy-300/60 py-14">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
           <Reveal>
             <ServicePicker />
-          </Reveal>
-        </div>
-      </section>
-
-      <section id="preview" className="relative border-t border-navy-300/60 py-14">
-        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
-          <Reveal>
-            <ScopePreview />
           </Reveal>
         </div>
       </section>
@@ -160,101 +151,43 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="how" className="relative border-t border-navy-300/60 py-14">
-        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
-          <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <SectionHeading
-                label="How it works"
-                title="From a few answers to a full competitive picture"
-              />
-              <Link
-                href="/how-it-works"
-                className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-brass-600 underline-offset-4 hover:underline"
-              >
-                See the full process
-                <ArrowRight size={13} />
-              </Link>
-            </div>
-          </Reveal>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((step, i) => (
-              <Reveal key={step.title} delay={i * 0.06}>
-                <div className="paper-panel h-full border border-navy-600 p-5">
-                  <span className="flex h-8 w-8 items-center justify-center bg-navy-800 font-mono text-xs text-brass-300">
-                    {i + 1}
-                  </span>
-                  <h3 className="mt-4 font-display text-base font-semibold text-navy-800">
-                    {step.title}
-                  </h3>
-                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-navy-500">
-                    {step.short}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="relative border-t border-navy-300/60 py-14">
+      <section id="pricing" className="relative border-t border-navy-300/60 py-14">
         <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
           <Reveal>
             <SectionHeading
-              label="Who it is for"
-              title="Built for anyone who needs to know the competition"
+              label="Pricing"
+              title="Start free. Pay when you want more."
+              body={`Your first report preview costs nothing. Plans start at ${STARTING_PRICE_LABEL} a month and you can cancel anytime.`}
             />
           </Reveal>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {AUDIENCES.map((a, i) => (
-              <Reveal key={a.title} delay={i * 0.06}>
-                <div className="paper-panel h-full border border-navy-600 p-5">
-                  <a.Icon size={18} className="text-brass-500" strokeWidth={1.75} />
-                  <h3 className="mt-3 font-display text-base font-semibold text-navy-800">
-                    {a.title}
-                  </h3>
-                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-navy-500">
-                    {a.description}
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {PAID_PLANS.map((id, i) => (
+              <Reveal key={id} delay={i * 0.07}>
+                <Link
+                  href="/pricing"
+                  className="paper-panel group block h-full border border-navy-600 p-6 transition-shadow hover:shadow-[0_6px_0_0_rgba(171,127,60,0.35)]"
+                >
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-navy-400">{PLANS[id].name}</p>
+                  <p className="mt-2 font-display text-3xl font-semibold text-navy-800">
+                    {formatPrice(PLANS[id].monthlyCents)}
+                    <span className="ml-1 font-sans text-sm font-normal text-navy-400">/month</span>
                   </p>
-                </div>
+                  <p className="mt-2 text-[14px] leading-relaxed text-navy-500">{PLAN_BLURBS[id]}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-brass-600 group-hover:underline">
+                    See what is included
+                    <ArrowRight size={13} />
+                  </span>
+                </Link>
               </Reveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section id="calculator" className="relative border-t border-navy-300/60 py-14">
-        <div className="mx-auto w-full max-w-6xl px-6 sm:px-10">
-          <Reveal>
-            <BlindSpotCalculator />
-          </Reveal>
-        </div>
-      </section>
-
-      <section id="ai-seo" className="relative border-t border-navy-300/60 py-10">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 sm:px-10">
-          <p className="max-w-2xl text-[14.5px] leading-relaxed text-navy-500">
-            <span className="font-semibold text-navy-800">Also available: AI SEO.</span> Customers increasingly ask AI
-            assistants who to hire. Our optional audit shows whether you get named and what to change.
-          </p>
-          <Link
-            href="/ai-seo"
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-brass-600 underline-offset-4 hover:underline"
-          >
-            Explore AI SEO
-            <ArrowRight size={13} />
-          </Link>
         </div>
       </section>
 
       <section id="faq" className="relative border-t border-navy-300/60 py-14">
         <div className="mx-auto w-full max-w-3xl px-6 sm:px-10">
           <Reveal>
-            <SectionHeading
-              label="Questions"
-              title="Quick answers before you start"
-              className="mb-8"
-            />
+            <SectionHeading label="Questions" title="Quick answers" className="mb-8" />
             <FaqList items={FAQS.filter((f) => HOME_FAQ_IDS.includes(f.id))} />
             <p className="mt-6">
               <Link

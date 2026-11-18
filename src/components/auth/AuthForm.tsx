@@ -20,7 +20,7 @@ export function AuthForm({
   next,
   skippable = false,
   heading = "Create your account",
-  subheading = "Save your progress and unlock your report when it's ready.",
+  subheading = "Save your progress so your report is waiting for you.",
 }: AuthFormProps) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("signup");

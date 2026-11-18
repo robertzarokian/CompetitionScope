@@ -167,7 +167,7 @@ const TABS: Tab[] = [
     label: "Success factors",
     Icon: TrendingUp,
     title: "Learn the habits your top rivals share",
-    body: "When several competitors do the same thing, it is usually working. We surface the repeatable patterns behind their success so you can act on them.",
+    body: "When several competitors do the same thing, it is usually working. We point out the patterns behind their success so you can copy what works.",
     points: [
       "Patterns shared across your competitors",
       "How many rivals show each trait",
@@ -179,8 +179,8 @@ const TABS: Tab[] = [
     id: "roadmap",
     label: "Roadmap and PDF",
     Icon: FileDown,
-    title: "Leave with a plan, not just a list",
-    body: "Every report ends with a prioritized roadmap tied to your situation, with each step rated by impact and effort, plus a branded PDF to share with your team.",
+    title: "Walk away with a plan",
+    body: "Every report ends with a roadmap written for your situation. Each step is rated by impact and effort, and a branded PDF is there to share with your team.",
     points: [
       "Steps ordered by priority",
       "Impact and effort for each step",
@@ -207,8 +207,8 @@ export function ReportExplorer() {
     <div>
       <SectionHeading
         label="What's inside your report"
-        title="Four sections that turn research into action"
-        body="Click through each part of the report to see what you get."
+        title="Here is what is in your report"
+        body="Click through each part to see what you get."
       />
 
       <div

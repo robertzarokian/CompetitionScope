@@ -50,7 +50,7 @@ export default function AiSeoPage() {
       <PageHero
         eyebrow="AI SEO, GEO and AEO"
         title="Get your business recommended by AI"
-        intro="Customers now ask AI assistants who to hire and what to buy. CompetitionScope reverse engineers those answers: who gets named, why, and which websites the AI trusts, so you know exactly what to do to be on the list."
+        intro="Customers now ask AI assistants who to hire and what to buy. CompetitionScope shows you how those answers get made: who gets named, why, and which websites the AI trusts. Then you know what to do to make the list."
       />
       <section className="mx-auto -mt-2 flex w-full max-w-6xl flex-wrap items-center gap-3 px-6 pb-12 sm:px-10">
         <ButtonLink href="/ai-seo/audit" size="lg">

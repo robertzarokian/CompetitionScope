@@ -1,3 +1,4 @@
+import { humanizeDeep } from "./humanize";
 import Anthropic from "@anthropic-ai/sdk";
 import { randomUUID } from "crypto";
 import { z } from "zod";
@@ -59,6 +60,11 @@ Research standards:
 - Do not fabricate specific non-public financial figures. When exact revenue is not publicly known, give a labeled estimate range (e.g. "$10M-$25M ARR (estimated)") based on reasonable signals like headcount, funding, or market position, and make clear it is an estimate.
 - Prefer real, verifiable companies found via search over speculation. If you cannot find enough real competitors, use the closest real analogues you can find rather than inventing companies.
 - Ground the analysis directly in the specific struggles and context the user described — do not give generic advice that would apply to any company.
+
+Writing style:
+- Write like a sharp, plain-spoken human analyst talking to a busy business owner. Short, direct sentences. Concrete details over buzzwords.
+- Never use em dashes or en dashes. Use commas, periods, or the word "to" for ranges.
+- Avoid hype and filler such as "leverage", "robust", "seamless", "game-changing", "landscape", "navigate", "unlock", and "in today's world".
 
 Output format:
 Return ONLY a single valid JSON object. No markdown code fences, no prose before or after it, no trailing commentary, and no inline citation markup of any kind (no <cite> tags or similar annotations) — state findings as plain prose. The JSON must match exactly this shape:
@@ -241,7 +247,7 @@ export async function generateReport(
     }
 
     const parsedJson = extractJson(finalText);
-    const parsed = reportSchema.parse(parsedJson);
+    const parsed = humanizeDeep(reportSchema.parse(parsedJson));
 
     const competitors = [...parsed.competitors].sort((a, b) => a.ranking - b.ranking);
 

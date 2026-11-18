@@ -8,7 +8,7 @@ export function CtaBand({
   title = "Find out who you are really up against.",
   body = "Answer 10 short questions and preview your report for free.",
   ctaHref = "/onboarding/1",
-  ctaLabel = "Begin your scope",
+  ctaLabel = "Start free",
   linkHref = "/sample-report",
   linkLabel = "See a sample report",
 }: {

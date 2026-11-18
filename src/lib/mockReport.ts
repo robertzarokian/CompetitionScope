@@ -75,10 +75,10 @@ function makeCompetitorName(category: string, seed: number): string {
 
 function revenueTierFor(rank: number): string {
   const tiers = [
-    "$40M–$80M ARR (estimated)",
-    "$20M–$40M ARR (estimated)",
-    "$8M–$20M ARR (estimated)",
-    "$3M–$8M ARR (estimated)",
+    "$40M to $80M ARR (estimated)",
+    "$20M to $40M ARR (estimated)",
+    "$8M to $20M ARR (estimated)",
+    "$3M to $8M ARR (estimated)",
   ];
   return tiers[Math.min(rank - 1, tiers.length - 1)];
 }
@@ -111,7 +111,7 @@ export function generateMockReport(
       ranking: rank,
       summary: `${name} operates in the same ${category} space as ${
         answers.companyName || "your company"
-      } and has built a reputation around consistency — showing up in the same channels, with the same message, quarter after quarter.`,
+      } and has built a reputation around consistency, showing up in the same channels, with the same message, quarter after quarter.`,
       estimatedSalesTier: revenueTierFor(rank),
       salesStrategy:
         rank <= 2
@@ -127,7 +127,7 @@ export function generateMockReport(
     {
       title: "A content engine that compounds",
       description:
-        "Every competitor we researched publishes on a predictable cadence and targets the exact questions your prospects are already searching for — turning content into a durable acquisition channel instead of a one-off campaign.",
+        "Every competitor we researched publishes on a predictable cadence and targets the exact questions your prospects are already searching for, turning content into a durable acquisition channel instead of a one-off campaign.",
     },
     {
       title: "Friction-free first experience",
@@ -137,15 +137,15 @@ export function generateMockReport(
     {
       title: "Pricing designed to be upgraded",
       description:
-        "Instead of one flat price, top performers use a tiered ladder where the next tier is always visibly one step away — making expansion revenue a built-in part of the model, not an afterthought.",
+        "Instead of one flat price, top performers use a tiered ladder where the next tier is always visibly one step away, making expansion revenue a built-in part of the model, not an afterthought.",
     },
     {
       title: "Proof placed at the moment of doubt",
       description:
-        "Case studies, testimonials, and specific numbers appear right where a buyer is likely to hesitate — not buried on a separate page nobody visits.",
+        "Case studies, testimonials, and specific numbers appear right where a buyer is likely to hesitate, not buried on a separate page nobody visits.",
     },
     {
-      title: "A retention loop, not just an acquisition funnel",
+      title: "A retention loop on top of the acquisition funnel",
       description:
         "The strongest competitors treat the first purchase as the start of the relationship, with lifecycle emails, community, or check-ins that bring customers back before they'd think to churn.",
     },
@@ -174,14 +174,14 @@ export function generateMockReport(
     {
       priority: 3,
       title: "Add a visible next tier to your pricing",
-      description: `If you only have one plan, or a big gap between plans, prospects don't see a growth path with you — so they look elsewhere as they scale. Add a clear middle tier that feels like a natural upgrade.`,
+      description: `If you only have one plan, or a big gap between plans, prospects don't see a growth path with you, so they look elsewhere as they scale. Add a clear middle tier that feels like a natural upgrade.`,
       impact: "medium",
       effort: "low",
     },
     {
       priority: 4,
       title: "Put proof exactly where hesitation happens",
-      description: `Identify the one or two moments in your funnel where people drop off, and place a specific, numbers-backed testimonial or case study right there — not on a generic "Customers" page.`,
+      description: `Identify the one or two moments in your funnel where people drop off, and place a specific, numbers-backed testimonial or case study right there, not on a generic "Customers" page.`,
       impact: "medium",
       effort: "low",
     },
@@ -206,14 +206,14 @@ export function generateMockReport(
     answers,
     executiveSummary: `${
       answers.companyName || "Your company"
-    } is competing in a ${category} market where the winners have converged on a small set of repeatable habits. Based on your answers — particularly around "${
+    } is competing in a ${category} market where the winners have converged on a small set of repeatable habits. Based on your answers, particularly around "${
       answers.struggles.slice(0, 140) || "growth and consistency"
-    }" — the gap between where you are and where the category leaders sit isn't about a single big swing. It's a handful of specific, fixable moves that compound. This report breaks down what your closest competitors are actually doing, in what order it matters, and what to do about it.`,
+    }", the gap between where you are and where the category leaders sit isn't about a single big swing. It's a handful of specific, fixable moves that compound. This report breaks down what your closest competitors are actually doing, in what order it matters, and what to do about it.`,
     competitors,
     successFactors,
     roadmap,
     freeTeaserInsight: `All ${competitors.length} of the competitors we researched share one growth lever ${
       answers.companyName || "you"
-    } hasn't fully used yet — and it's responsible for a meaningful share of their new customer acquisition. Unlock the full report to see exactly which one, and the step-by-step roadmap to close the gap.`,
+    } hasn't fully used yet, and it's responsible for a meaningful share of their new customer acquisition. Unlock the full report to see exactly which one, and the step-by-step roadmap to close the gap.`,
   };
 }

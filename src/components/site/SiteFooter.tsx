@@ -42,7 +42,7 @@ export function SiteFooter() {
                 href="/onboarding/1"
                 className="text-sm text-navy-500 transition-colors hover:text-navy-800"
               >
-                Begin your scope
+                Start free
               </Link>
             </li>
             <li>

@@ -6,10 +6,10 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { STARTING_PRICE_LABEL } from "@/lib/plans";
 
 const MAIN_POINTS = [
-  "Your closest rivals, ranked by how closely they match you",
+  "Your closest rivals, ranked by how well they match you",
   "How each one sells, where they advertise, and how big they are",
-  "What they all have in common, and why they are winning",
-  "A prioritized 3 step plan to beat them",
+  "What the winners have in common",
+  "A 3 step plan, ordered by what to do first",
 ];
 
 // What the visitor might be looking for, in plain words. Competitor analysis
@@ -20,7 +20,7 @@ export function ServicePicker() {
       <SectionHeading
         label="What we do"
         title="What are you looking for?"
-        body="Most customers start with a competitor analysis. Tracking and AI SEO are options you can add."
+        body="Most people start with a competitor analysis. Tracking and AI SEO are optional extras."
       />
       <div className="mt-8 grid gap-5 lg:grid-cols-[1.35fr_1fr]">
         <div className="instrument-panel card-glow relative overflow-hidden p-6 sm:p-8">
@@ -37,8 +37,8 @@ export function ServicePicker() {
             <p className="mt-5 font-display text-sm italic text-brass-300">&ldquo;Who am I really up against?&rdquo;</p>
             <h3 className="mt-1 font-display text-3xl font-semibold text-cream-50">Competitor Analysis</h3>
             <p className="mt-3 max-w-md text-[15px] leading-relaxed text-cream-200">
-              Answer 10 short questions. We research the live web, find the companies winning your customers, and show you
-              exactly how to beat them. Ready in about a minute.
+              Answer 10 quick questions. We search the web, find the companies winning your customers, and show you how to
+              beat them. Ready in about a minute.
             </p>
             <ul className="mt-5 space-y-2.5">
               {MAIN_POINTS.map((p) => (
@@ -50,7 +50,7 @@ export function ServicePicker() {
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <ButtonLink href="/onboarding/1" size="lg">
-                Begin your scope
+                Start free
                 <ArrowRight size={16} />
               </ButtonLink>
               <Link
@@ -74,8 +74,7 @@ export function ServicePicker() {
             <p className="mt-3 font-display text-sm italic text-navy-500">&ldquo;What if my competition changes?&rdquo;</p>
             <h3 className="mt-1 font-display text-xl font-semibold text-navy-800">Ongoing tracking</h3>
             <p className="mt-2 text-[13.5px] leading-relaxed text-navy-500">
-              Automatic re-checks, trend lines, and email alerts when something changes, so you never fall behind. From{" "}
-              {STARTING_PRICE_LABEL}/month.
+              Automatic re-checks, trend lines, and email alerts when something changes. From {STARTING_PRICE_LABEL}/month.
             </p>
             <Link
               href="/pricing"
@@ -94,8 +93,8 @@ export function ServicePicker() {
             <p className="mt-3 font-display text-sm italic text-navy-500">&ldquo;Does AI recommend my business?&rdquo;</p>
             <h3 className="mt-1 font-display text-xl font-semibold text-navy-800">AI SEO audit</h3>
             <p className="mt-2 text-[13.5px] leading-relaxed text-navy-500">
-              See whether AI assistants name you when customers ask for recommendations, and which websites they trust.
-              Included with every paid plan.
+              Find out whether AI assistants like ChatGPT recommend your business, and which websites they trust. Included
+              with every paid plan.
             </p>
             <Link
               href="/ai-seo"

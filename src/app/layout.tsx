@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s | CompetitionScope",
   },
   description:
-    "Point CompetitionScope at your competitors. Get an AI-powered deep dive on your closest rivals, including their strategy, their edge, and exactly what to do about it.",
+    "CompetitionScope finds your closest competitors for you. See who is winning your customers, how they do it, and what to do about it. Free preview in about a minute.",
   openGraph: {
     siteName: "CompetitionScope",
     type: "website",

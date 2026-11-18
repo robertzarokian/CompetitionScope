@@ -56,8 +56,8 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
     <PageShell>
       <PageHero
         eyebrow="Pricing"
-        title="Stay ahead, not just informed."
-        intro="Competitors and AI answers change every week. Start with a free preview, then pick a plan that keeps watching for you. Cancel anytime."
+        title="Stay a step ahead of your competition."
+        intro="Your competitors do not stand still. Start with a free preview, then pick a plan that keeps watching for you. Cancel anytime."
       />
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-14 sm:px-10">

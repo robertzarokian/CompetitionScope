@@ -47,7 +47,7 @@ export function SiteHeader() {
             {signedIn ? "Dashboard" : "Log in"}
           </Link>
           <ButtonLink href="/onboarding/1" size="sm">
-            Begin your scope
+            Start free
           </ButtonLink>
         </nav>
 
@@ -93,7 +93,7 @@ export function SiteHeader() {
             className="mt-2"
             onClick={() => setOpen(false)}
           >
-            Begin your scope
+            Start free
           </ButtonLink>
         </nav>
       )}

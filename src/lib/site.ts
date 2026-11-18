@@ -16,24 +16,24 @@ export const LINKEDIN_URL = "https://www.linkedin.com/company/competitionscope/"
 
 export const STEPS = [
   {
-    title: "Answer 10 short questions",
-    short: "Your company, your website, what you sell, and where you are struggling.",
-    long: "Start with your email, then tell us your company name, website, category, and what you provide. We also ask where you are struggling, how sales feel right now, and which marketing channels you use. If you already know some rivals, add them. It takes a few minutes.",
+    title: "Answer 10 quick questions",
+    short: "Your company, your website, what you sell, and what has been hard lately.",
+    long: "Start with your email, then tell us your company name, website, and what you offer. We also ask what you are struggling with, how sales feel right now, and which marketing channels you use. If you already know a few rivals, list them. Most people finish in a few minutes.",
   },
   {
-    title: "We research the live web",
-    short: "We search for the rivals you are most likely losing to and study how they win.",
-    long: "We search the web for the companies closest to you, then look at each one's positioning, pricing signals, marketing channels, apparent scale, and what they emphasize publicly. Your answers steer the search, so the findings stay specific to your situation.",
+    title: "We research the web",
+    short: "We look for the companies you are most likely losing customers to.",
+    long: "We search the live web for the companies closest to you, then study each one: how they position themselves, how they price, where they advertise, roughly how big they are, and what they put front and center. Your answers steer the search, so what comes back is about you and not a generic list.",
   },
   {
-    title: "Preview your results free",
-    short: "See your executive summary, our first insight, and your top competitor in full.",
-    long: "In about a minute or two your report is ready. The free preview shows an executive summary, the first thing we noticed, and your closest competitor in full detail. The rest is previewed so you can see what is waiting.",
+    title: "See your free preview",
+    short: "Your summary, the first thing we noticed, and your top rival in full.",
+    long: "About a minute later your report is ready. The free preview gives you an executive summary, the first thing we noticed, and your closest competitor in full detail. The rest is blurred out so you can see what is waiting.",
   },
   {
-    title: "Choose a plan to keep watching",
-    short: "Unlock every report, then get automatic re-checks, trend lines, and alerts.",
-    long: `Plans start at ${STARTING_PRICE_LABEL} a month. You get every competitor breakdown, the success factors they share, and a prioritized roadmap, plus automatic re-checks, trend lines, change alerts, and a progress checklist so you can see whether your actions are working.`,
+    title: "Pick a plan to keep going",
+    short: "Unlock every report and get automatic re-checks and alerts.",
+    long: `Plans start at ${STARTING_PRICE_LABEL} a month. You get every competitor breakdown, what they have in common, and a prioritized roadmap. Plans also re-check your market on a schedule, chart how things change, email you alerts, and keep a checklist so you can tell whether your changes are working.`,
   },
 ] as const;
 
@@ -51,84 +51,84 @@ export const FAQS: FaqItem[] = [
     id: "what",
     question: "What is CompetitionScope?",
     answer:
-      "CompetitionScope researches your closest competitors on the live web and turns what it finds into a ranked report with a prioritized plan. You answer 10 short questions about your business and we do the research.",
+      "It is a research tool that finds your closest competitors on the live web and turns what it finds into a ranked report with a plan. You answer 10 quick questions about your business and we do the digging.",
   },
   {
     id: "how-found",
-    question: "How does it find my competitors?",
+    question: "How do you find my competitors?",
     answer:
-      "We use your answers, such as what you sell, who you sell to, where you are struggling, and any rivals you already know, to search the web for the companies you are most likely competing with. Each one gets a match score, and we study its positioning, pricing signals, marketing channels, and apparent scale.",
+      "We start with your answers: what you sell, who you sell to, where you struggle, and any rivals you already know. Then we search the web for the companies you are most likely up against. Each one gets a match score, and we look at how they position themselves, how they price, where they advertise, and roughly how big they are.",
   },
   {
     id: "time",
     question: "How long does it take?",
     answer:
-      "Most reports finish in about a minute. Occasionally it takes up to 2 minutes, so keep the tab open while we work.",
+      "Most reports are ready in about a minute. Some take up to 2 minutes, so keep the tab open while we work.",
   },
   {
     id: "free",
     question: "What do I get for free?",
     answer:
-      "A free preview with an executive summary, the one insight we noticed first, and your first competitor in full detail, The rest of the report, and the AI visibility audit, need a plan.",
+      "A free preview with an executive summary, the first thing we noticed, and your closest competitor in full detail. The rest of the report, and the AI visibility audit, need a plan.",
   },
   {
     id: "included",
-    question: "What does the full report include?",
+    question: "What is in the full report?",
     answer:
-      "Your three closest competitors in full detail, the three success factors they share, and a three-step prioritized roadmap rated by impact and effort. Plans add automatic re-checks, trend lines, change alerts, and a progress checklist. Growth and Agency also include PDF reports.",
+      "Your three closest competitors in full detail, the three success factors they share, and a three-step roadmap rated by impact and effort. Plans also add automatic re-checks, trend lines, change alerts, and a progress checklist. Growth and Agency plans include PDF reports.",
   },
   {
     id: "cost",
     question: "How much does it cost?",
-    answer: `Plans start at ${STARTING_PRICE_LABEL} a month. Billing yearly gets you 2 months free. There are no setup fees, and the free preview costs nothing.`,
+    answer: `Plans start at ${STARTING_PRICE_LABEL} a month. Pay yearly and you get 2 months free. There are no setup fees, and the free preview costs nothing.`,
   },
   {
     id: "cancel",
     question: "Can I cancel anytime?",
     answer:
-      "Yes. You can cancel from your dashboard whenever you like. You keep access until the end of the period you already paid for, and your history stays saved. New paid plans also have a 7 day money-back guarantee, explained on our refund policy page.",
+      "Yes. Cancel from your dashboard whenever you like. You keep access until the end of the period you paid for, and your history stays saved. New paid plans also come with a 7 day money-back guarantee, which our refund policy page explains.",
   },
   {
     id: "alerts-scope",
     question: "What do the alerts cover?",
     answer:
-      "Alerts cover changes we can measure: whether and how often AI recommends you, which competitors it names instead, new or dropped competitors in your refreshed report, and (on Growth and Agency) website and backlink changes. We do not currently track competitor price changes or ad spending.",
+      "Things we can actually measure: whether and how often AI recommends you, which competitors it names instead, and new or dropped competitors when your report refreshes. On Growth and Agency, we also watch website and backlink changes. We do not track competitor price changes or ad spending.",
   },
   {
     id: "accuracy",
     question: "How accurate is the research?",
     answer:
-      "The research is done by AI with live web search, so treat it as a strong starting point rather than audited fact. Revenue and scale figures are labeled estimates, and we never present non-public financials as facts. Check any detail that matters before you base a big decision on it.",
+      "The research is done by AI with live web search, so treat it as a strong starting point and not audited fact. Revenue and size figures are labeled estimates, and we never pass off private financials as real numbers. Double-check anything that matters before you make a big decision.",
   },
   {
     id: "known-rivals",
-    question: "Can I add competitors I already know about?",
+    question: "Can I add competitors I already know?",
     answer:
-      "Yes. One optional question lets you list rivals you already know. They guide the research, and we look for the ones you have missed.",
+      "Yes. One optional question lets you list them. They guide the research, and we also look for the ones you missed.",
   },
   {
     id: "niche",
     question: "What if my business is very niche?",
     answer:
-      "We use the closest real analogues we can find rather than inventing companies. The more specific your answers are, the better the match.",
+      "We use the closest real businesses we can find instead of making companies up. The more specific your answers, the better the match.",
   },
   {
     id: "account",
     question: "Do I need an account?",
     answer:
-      "Not to preview your report, which needs only your email. You create an account to subscribe, which unlocks the AI visibility audit, so your reports, history, and alerts are saved.",
+      "Not to see your preview. That only needs your email. You create an account when you subscribe, so your reports, history, and alerts are saved, and the AI visibility audit unlocks with it.",
   },
   {
     id: "pdf",
     question: "Can I download the report?",
     answer:
-      "Yes, on the Growth and Agency plans. Agency plans can also put your own brand name on the PDF instead of ours.",
+      "Yes, on the Growth and Agency plans. Agency plans can swap our name for your own brand on the PDF.",
   },
   {
     id: "again",
     question: "Can I run it again or for another company?",
     answer:
-      "Yes. With a plan, the company you track is re-checked automatically (monthly on Starter, weekly on Growth and Agency). You can also start a new scope any time for another company.",
+      "Yes. With a plan, the company you track is re-checked automatically, monthly on Starter and weekly on Growth and Agency. You can also start a new scope for another company any time.",
   },
 ];
 

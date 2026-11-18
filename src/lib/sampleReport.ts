@@ -34,7 +34,7 @@ export const SAMPLE_COMPETITORS: CompetitorProfile[] = [
     ],
     successFactors: [
       "Publishes head-to-head pages that rank for rival brand names",
-      "Turns a commodity tool into a cash-flow tool in every headline",
+      "Sells a cash-flow tool in every headline, not just a commodity",
     ],
   },
   {
